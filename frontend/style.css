@@ -1,0 +1,360 @@
+
+
+/*шрифты*/
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap');
+
+/*переменные*/
+:root {
+  --ink: #3d4a2e;
+  --ink-muted: #849859;
+  --ink-faint: #c8cfb8;
+  --parchment: #f7f4d5;
+  --parchment-dark: #ece9c8;
+  --parchment-mid: #f2efda;
+  --accent: #849859;
+  --accent-hover: #6b7d45;
+  --accent-light: #e8ecdb;
+  --blue: #849859;
+  --blue-light: #e8ecdb;
+  --gold: #c49012;
+  --gold-light: #f2efda;
+  --green: #6b7d45;
+  --green-light: #e8ecdb;
+  --surface: #ffffff;
+  --border: rgba(132, 152, 89, 0.15);
+  --border-strong: rgba(132, 152, 89, 0.3);
+  --shadow-sm: 0 1px 4px rgba(132, 152, 89, 0.1);
+  --shadow: 0 4px 20px rgba(132, 152, 89, 0.15);
+  --shadow-lg: 0 12px 40px rgba(132, 152, 89, 0.2);
+  --r: 10px;
+  --r-lg: 16px;
+  --nav-h: 64px;
+}
+
+/*сброс*/
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--parchment);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/*экраны (общие)*/
+.screen { display: none; min-height: 100vh; flex-direction: column; transition: opacity 0.5s ease, transform 0.5s ease; }
+.screen.active { display: flex; }
+
+/*приветственный экран */
+#landing-screen {
+  background: linear-gradient(135deg, #f7f4d5 0%, #e8ecdb 40%, #d4dfc4 100%);
+  align-items: center; justify-content: center; padding: 0; min-height: 100vh;
+}
+.landing-hero { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1100px; margin: 0 auto; padding: 2rem; gap: 3rem; }
+.landing-left { flex: 1; max-width: 480px; }
+.landing-right { flex: 1; display: flex; align-items: center; justify-content: flex-end; }
+.landing-title { font-family: 'Playfair Display', serif; font-size: 4.5rem; font-weight: 600; font-style: italic; color: #5a6e3a; line-height: 1.1; margin-bottom: 1.2rem; letter-spacing: -1px; }
+.landing-title-small { display: block; font-size: 1.8rem; font-weight: 400; font-style: italic; color: #849859; margin-bottom: 0.2rem; letter-spacing: 0; }
+.landing-desc { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 500; color: #849859; line-height: 1.6; margin-bottom: 2rem; opacity: 0.9; max-width: 460px; }
+.landing-btn { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.85rem 2.2rem; background: #849859; color: #fff; border: none; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500; cursor: pointer; transition: all 0.25s; letter-spacing: 0.02em; box-shadow: 0 4px 16px rgba(132,152,89,0.25); }
+.landing-btn:hover { background: #6b7d45; transform: translateY(-2px); box-shadow: 0 6px 24px rgba(132,152,89,0.4); }
+.landing-btn:active { transform: scale(0.98); }
+.landing-arrow { font-size: 1.1rem; transition: transform 0.2s; }
+.landing-btn:hover .landing-arrow { transform: translateX(4px); }
+.landing-image { max-width: 100%; max-height: 800px; border-radius: 24px; object-fit: cover; box-shadow: 0 8px 40px rgba(132,152,89,0.2); }
+
+/*экран входа/регистрации*/
+#auth-screen { background: url('img/mountain.jpg') center/cover no-repeat; align-items: center; justify-content: center; padding: 2rem; position: relative; }
+#auth-screen::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.35); z-index: 0; }
+#auth-screen .auth-card { position: relative; z-index: 1; }
+.auth-card { background: var(--parchment); border-radius: var(--r-lg); padding: 3rem 2.5rem; width: 100%; max-width: 480px; box-shadow: var(--shadow-lg); position: relative; z-index: 1; opacity: 0; transform: translateY(40px); animation: fadeUp 0.8s ease forwards; }
+.auth-logo { font-family: 'Playfair Display', serif; font-size: 3.2rem; font-weight: 600; font-style: italic; color: #5a6e3a; text-align: center; margin-bottom: 0.25rem; letter-spacing: -0.5px; }
+.auth-tagline { font-family: 'Cormorant Garamond', serif; text-align: center; color: #5a6e3a; font-size: 1.5rem; font-weight: 500; margin-bottom: 2rem; letter-spacing: 0.02em; }
+.auth-tabs { display: flex; background: var(--parchment-dark); border-radius: 8px; padding: 3px; margin-bottom: 1.5rem; gap: 3px; }
+.auth-tab { flex: 1; padding: 0.5rem; text-align: center; border-radius: 6px; cursor: pointer; font-size: 0.88rem; font-weight: 500; transition: all 0.2s; border: none; background: none; color: var(--ink-muted); font-family: 'DM Sans', sans-serif; }
+.auth-tab.active { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-sm); }
+.auth-form { display: none; }
+.auth-form.active { display: block; }
+.auth-error { display: none; background: #fdf0ee; color: var(--accent); border: 1px solid var(--accent-light); border-radius: var(--r); padding: 0.6rem 0.9rem; font-size: 0.85rem; margin-bottom: 1rem; }
+.auth-link { text-align: center; margin-top: 1.2rem; font-size: 0.85rem; color: var(--ink-muted); }
+.auth-link a { color: var(--accent); text-decoration: none; font-weight: 500; }
+.auth-link a:hover { text-decoration: underline; }
+
+/*поля форм*/
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; font-size: 0.82rem; font-weight: 500; color: var(--ink-muted); margin-bottom: 0.35rem; letter-spacing: 0.02em; }
+.form-group input { width: 100%; padding: 0.65rem 0.9rem; border: 1.5px solid var(--border-strong); border-radius: var(--r); background: var(--surface); color: var(--ink); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
+.form-group input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+.form-group input::placeholder { color: #c8cfb8; opacity: 1; }
+.form-group textarea { width: 100%; padding: 0.65rem 0.9rem; border: 1.5px solid var(--border-strong); border-radius: var(--r); background: var(--surface); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; resize: vertical; outline: none; }
+.form-group textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+.form-group input[type="file"] { border: none; padding: 0.4rem 0; font-size: 0.85rem; }
+.form-group input[type="checkbox"] { width: auto; margin-right: 0.4rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
+/*кнопки*/
+.btn-primary { width: 100%; padding: 0.75rem; background: var(--accent); color: #fff; border: none; border-radius: var(--r); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: background 0.2s, transform 0.1s; margin-top: 0.5rem; }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-primary:active { transform: scale(0.98); }
+.btn-cancel { flex: 1; padding: 0.65rem; border: 1px solid var(--border-strong); border-radius: var(--r); background: var(--surface); color: var(--ink-muted); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; }
+.btn-cancel:hover { background: var(--parchment); }
+
+/*пароль*/
+.password-wrapper { position: relative; display: flex; align-items: center; }
+.password-wrapper input { width: 100%; padding-right: 2.5rem; }
+.toggle-password { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 4px; line-height: 0; opacity: 0.5; transition: opacity 0.2s; }
+.toggle-password:hover { opacity: 0.8; }
+.eye-icon { width: 20px; height: 20px; object-fit: contain; }
+
+/*экран после входа*/
+#welcome-screen { background: radial-gradient(ellipse at center, #f7f4d5 30%, #e2e8d0 70%, #c8d5a8 100%); align-items: center; justify-content: center; padding: 3rem 2rem; text-align: center; }
+.welcome-inner { max-width: 900px; }
+.welcome-title { font-family: 'Cormorant Garamond', serif; font-size: 4rem; font-weight: 700; color: #5a6e3a; margin-bottom: 0.8rem; line-height: 1.3; }
+.welcome-title span { color: #5a6e3a; }
+.welcome-subtitle { font-family: 'Raleway', sans-serif; font-size: 1.15rem; font-weight: 300; letter-spacing: 0.02em; color: #849859; margin-bottom: 2rem; }
+.welcome-section-label { font-family: 'Raleway', sans-serif; font-size: 1.1rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #5a6e3a; margin-bottom: 1rem; }
+.welcome-icon { display: none; }
+.welcome-overlay { display: none; }
+
+/*карточки возможностей*/
+.welcome-features { display: flex; gap: 1rem; margin-bottom: 2rem; }
+.feature-col { flex: 1; display: flex; flex-direction: column; gap: 0; transition: transform 0.3s ease, box-shadow 0.3s ease; opacity: 0; transform: translateY(30px); animation: fadeUp 0.7s ease forwards; }
+.feature-col:nth-child(1) { animation-delay: 0.1s; }
+.feature-col:nth-child(2) { animation-delay: 0.3s; }
+.feature-col:nth-child(3) { animation-delay: 0.5s; }
+.feature-col:hover { transform: translateY(-8px) scale(1); box-shadow: 0 12px 32px rgba(132,152,89,0.3); }
+.feature-card { background: rgba(255,255,255,0.85); border: 1px solid rgba(132,152,89,0.2); border-radius: var(--r) var(--r) 0 0; padding: 1.5rem 1.5rem; text-align: center; }
+.feature-card .feat-title { font-family: 'Raleway', sans-serif; font-size: 0.9rem; font-weight: 600; letter-spacing: 0.02em; color: #5a6e3a; margin-bottom: 0.5rem; }
+.feature-card .feat-desc { font-family: 'Raleway', sans-serif; font-size: 0.85rem; font-weight: 300; color: #849859; line-height: 1.5; }
+.feature-image { border-radius: 0 0 var(--r) var(--r); overflow: hidden; height: 170px; }
+.feature-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/*кнопки*/
+.welcome-buttons { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; opacity: 0; transform: translateY(20px); animation: fadeUp 0.6s ease forwards; animation-delay: 0.7s; }
+.btn-start { display: inline-block; padding: 1rem 3.5rem; background: #849859; color: #fff; border: none; border-radius: var(--r); font-family: 'DM Sans', sans-serif; font-size: 1.1rem; font-weight: 500; cursor: pointer; transition: all 0.2s; letter-spacing: 0.02em; box-shadow: 0 4px 16px rgba(132,152,89,0.3); }
+.btn-start:hover { background: #6b7d45; transform: translateY(-1px); }
+.btn-logout { display: inline-block; padding: 0.7rem 2rem; background: transparent; color: #849859; border: 1px solid rgba(132,152,89,0.3); border-radius: var(--r); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; }
+.btn-logout:hover { background: rgba(132,152,89,0.1); color: #6b7d45; }
+
+/*главный экран (общ элементы)*/
+/*нижнее меню*/
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 64px; background: #ffffff; border-top: 4px solid #849859; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0 1rem; z-index: 100; box-shadow: 0 -2px 16px rgba(0,0,0,0.05); }
+.nav-item { flex: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; background: transparent; color: #849859; font-family: 'Raleway', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 0.5rem 0; border-radius: 10px; transition: all 0.25s; }
+.nav-item.active { background: rgba(132,152,89,0.1) !important; color: #5a6e3a !important; box-shadow: 0 2px 8px rgba(132,152,89,0.1) !important; border-radius: 10px !important; }
+.nav-item .nav-label { font-size: 0.8rem; }
+.nav-item svg { display: none; }
+
+/*панели разделов*/
+.section-panel { display: none; }
+.section-panel.active { display: block; }
+.section-header { padding: 1.2rem 1.2rem 1rem; border-bottom: 1px solid var(--border); background: var(--surface); position: sticky; top: 0; z-index: 10; }
+.section-header h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--ink); }
+.placeholder-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; text-align: center; color: var(--ink-muted); min-height: 300px; }
+.placeholder-panel .ph-icon { font-size: 3rem; margin-bottom: 1rem; }
+.placeholder-panel p { font-size: 0.9rem; line-height: 1.6; }
+
+/*имя в загловке*/
+.header-brand { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 600; font-style: italic; color: #5a6e3a; margin-left: auto; }
+
+/*карта*/
+#panel-map .section-header { display: none; }
+.map-header { background: #ffffff; padding: 1rem 1.5rem; border-bottom: 1px solid rgba(132,152,89,0.1); display: flex; align-items: center; }
+.map-header h2 { font-family: 'Raleway', sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #4b5b31; margin: 0; text-align: left; }
+#map-container { width: 100%; height: calc(100vh - 120px); background: #f7f4d5; }
+.ymaps-2-1-79-map { border-radius: 0 !important; }
+
+/*яндекс*/
+.ymaps-2-1-79-balloon { border-radius: 14px !important; overflow: hidden !important; box-shadow: 0 6px 24px rgba(0,0,0,0.12) !important; border: none !important; }
+.ymaps-2-1-79-balloon__content { font-family: 'Raleway', sans-serif !important; padding: 12px 14px !important; }
+.ymaps-2-1-79-balloon__layout { border-radius: 14px !important; }
+.ymaps-2-1-79-balloon__close { opacity: 0.5 !important; }
+.ymaps-2-1-79-balloon__tail { display: none !important; }
+
+/*личный кабинет*/
+#panel-profile .section-header { display: none; }
+#panel-profile { background: linear-gradient(to right, #c8d5a8 0%, #e2e8d0 50%, #f7f4d5 100%); min-height: 100vh; }
+.profile-header { background: #ffffff; padding: 1rem 1.5rem; border-bottom: 1px solid rgba(132,152,89,0.1); display: flex; align-items: center; }
+.profile-header h2 { font-family: 'Raleway', sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #4b5b31; margin: 0; text-align: left; }
+.profile-content { display: flex; flex-direction: column; align-items: center; padding: 2.5rem 1.5rem; text-align: center; background: transparent; }
+
+/*аватарка*/
+.profile-avatar-wrapper { width: 180px; height: 180px; border-radius: 50%; background: rgba(132,152,89,0.1); border: 2px solid rgba(132,152,89,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; position: relative; transition: all 0.2s; margin-bottom: 1rem; }
+.profile-avatar-wrapper:hover { border-color: #849859; background: rgba(132,152,89,0.15); }
+.profile-avatar-placeholder { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('img/default.jpg') center/cover no-repeat; opacity: 0.8; }
+.profile-avatar-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+.profile-avatar-actions { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.btn-avatar-change { padding: 0.4rem 1rem; background: transparent; color: #849859; border: 1px solid rgba(132,152,89,0.3); border-radius: 8px; font-family: 'Raleway', sans-serif; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; transition: all 0.2s; }
+.btn-avatar-change:hover { background: rgba(132,152,89,0.1); color: #5a6e3a; }
+.btn-avatar-delete { padding: 0.4rem 1rem; background: transparent; color: #b5341e; border: 1px solid rgba(181,52,30,0.3); border-radius: 8px; font-family: 'Raleway', sans-serif; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; transition: all 0.2s; }
+.btn-avatar-delete:hover { background: rgba(181,52,30,0.05); }
+.profile-avatar { font-size: 3.5rem; margin-bottom: 1rem; }
+
+/*имя и логин*/
+.profile-top { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem; width: 100%; }
+.profile-left { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; flex-shrink: 0; padding-left: 4rem; }
+.profile-right { display: flex; flex-direction: column; justify-content: space-between; flex: 1; padding-left: 1rem; margin-top: -60px; height: 100%; }
+.profile-right-top { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+.profile-right-bottom { display: flex; flex-direction: column; align-items: flex-end; text-align: right; margin-top: auto; margin-right: 2rem; }
+.profile-name { font-family: 'Raleway', sans-serif; font-size: 2rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #5a6e3a; margin-bottom: 0.1rem; }
+.profile-right .profile-name { margin-top: 4rem; margin-bottom: 0.1rem; }
+.profile-login { font-family: 'Raleway', sans-serif; font-size: 0.9rem; font-weight: 700; color: #849859; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0; }
+.profile-right .profile-login { margin-bottom: 0; }
+.profile-age { font-family: 'Raleway', sans-serif; font-size: 1rem; font-weight: 600; color: #849859; margin-bottom: 0.2rem; }
+
+/*статистика*/
+.profile-stats-container { background: rgba(255,255,255,0.7); border: 1px solid rgba(132,152,89,0.15); border-radius: 14px; padding: 1.2rem 1.5rem; margin-top: 0.8rem; width: 115%; transition: all 0.3s ease; cursor: default; }
+.profile-stats-container:hover { background: rgba(255,255,255,0.95); transform: translateY(-4px); box-shadow: 0 6px 20px rgba(132,152,89,0.15); border-color: rgba(132,152,89,0.3); }
+.profile-stats-title { font-family: 'Raleway', sans-serif; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #849859; margin-bottom: 0.6rem; text-align: center; }
+.profile-stats { display: flex; align-items: center; justify-content: center; gap: 0; }
+.stat-card { background: transparent; border: none; padding: 0.3rem 0.8rem; text-align: center; }
+.stat-number { display: block; font-family: 'DM Sans', sans-serif; font-size: 1.8rem; font-weight: 400; color: #5a6e3a; line-height: 1; transition: transform 0.3s ease; }
+.profile-stats-container:hover .stat-number { transform: scale(1.1); }
+.stat-label { font-family: 'Raleway', sans-serif; font-size: 0.6rem; font-weight: 600; color: #849859; text-transform: uppercase; letter-spacing: 0.04em; }
+.stat-divider { width: 1px; height: 30px; background: rgba(132,152,89,0.2); }
+
+/*статус*/
+.profile-status-wrapper { display: flex; align-items: center; justify-content: center; padding-left: 17rem; gap: 0.6rem; margin-top: 0.5rem; margin-bottom: 0.3rem; width: 100%; padding-right: 0; }
+.profile-status-label { font-family: 'Raleway', sans-serif; font-size: 1.5rem; font-weight: 600; color: #849859; }
+.profile-status { background: rgba(132,152,89,0.1); border: 1px solid rgba(132,152,89,0.2); border-radius: 20px; padding: 0.4rem 1.2rem; font-family: 'Raleway', sans-serif; font-size: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #5a6e3a; margin: 0; }
+
+/*уровни статусов*/
+.status-levels { display: flex; gap: 0.8rem; margin-top: 0.8rem; justify-content: flex-end; width: 100%; }
+.status-level-card { flex: 1; max-width: 280px; background: rgba(255,255,255,0.7); border: 1px solid rgba(132,152,89,0.15); border-radius: 14px; padding: 1.5rem 1.2rem; text-align: center; transition: all 0.3s ease; }
+.status-level-card:hover { background: rgba(255,255,255,0.95); transform: translateY(-6px) scale(1.05); box-shadow: 0 10px 28px rgba(132,152,89,0.2); border-color: rgba(132,152,89,0.3); }
+.status-level-img { width: 48px; height: 48px; object-fit: contain; margin-bottom: 0.5rem; }
+.status-level-title { font-family: 'Raleway', sans-serif; font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em; color: #5a6e3a; margin-bottom: 0.3rem; }
+.status-level-desc { font-family: 'Raleway', sans-serif; font-size: 0.8rem; font-weight: 800; color: #849859; line-height: 1.3; }
+.status-levels-text { font-family: 'Raleway', sans-serif; font-size: 1rem; font-weight: 600; color: #849859; text-align: center; margin-top: 0.8rem; line-height: 1.5; width: 85%; align-self: flex-end; }
+
+/*дата и выход из системы*/
+.profile-date { font-family: 'Raleway', sans-serif; font-size: 0.75rem; color: #849859; margin-bottom: 2rem; }
+.profile-footer { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+.profile-footer .profile-date { font-family: 'Raleway', sans-serif; font-size: 1rem; font-weight: 500; color: #849859; text-align: center; margin: 0; }
+.btn-logout-profile { padding: 0.7rem 2rem; background: transparent; color: #b5341e; border: 1px solid rgba(181,52,30,0.3); border-radius: 10px; font-family: 'Raleway', sans-serif; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; transition: all 0.2s; }
+.btn-logout-profile:hover { background: rgba(255,38,0,0.2); border-color: #b5341e; }
+.profile-left .btn-logout-profile:hover { background: rgba(181,52,30,0.05); border-color: #b5341e; }
+.btn-edit-profile { padding: 0.3rem 0.8rem; background: transparent; color: #849859; border: 1px solid rgba(132,152,89,0.3); border-radius: 8px; font-family: 'Raleway', sans-serif; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; margin-top: 0.3rem; }
+.btn-edit-profile:hover { background: rgba(132,152,89,0.1); }
+
+/*мои путешествия*/
+#panel-trips { background: linear-gradient(rgba(60,80,40,0.3), rgba(60,80,40,0.3)), url('img/travel.jpg') right center/auto 120% no-repeat !important; background-color: #c8d5a8; display: flex; flex-direction: column; height: calc(100vh - 64px); overflow: hidden; }
+.trips-header { background: #ffffff; padding: 1rem 1.5rem; border-bottom: 1px solid rgba(132,152,89,0.1); display: flex; align-items: center; flex-shrink: 0; }
+.trips-header h2 { font-family: 'Raleway', sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #4b5b31; margin: 0; text-align: left; }
+
+/*поиск*/
+.trip-search { padding: 0.5rem 1rem; flex-shrink: 0; }
+.trip-search input { width: 100%; padding: 0.6rem 1rem; border: 1.5px solid rgba(132,152,89,0.2); border-radius: 10px; font-family: 'Raleway', sans-serif; font-size: 0.8rem; color: #5a6e3a; background: rgba(255,255,255,0.7); outline: none; transition: border-color 0.2s; }
+.trip-search input::placeholder { color: #849859; opacity: 0.6; }
+.trip-search input:focus { border-color: #849859; background: #fff; }
+
+/*вкладки*/
+.trip-tabs { display: flex; background: #ffffff; margin: 0.5rem 1rem; border-radius: 10px; padding: 4px; gap: 0.5rem; flex-shrink: 0; }
+.trip-tab { flex: 1; padding: 0.7rem 1rem; text-align: center; border-radius: 10px; cursor: pointer; border: 2px solid transparent; background: #ffffff; font-family: 'Raleway', sans-serif; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #849859; transition: all 0.25s; }
+.trip-tab.active { background: #f7f4d5; color: #5a6e3a; border-color: #849859; box-shadow: 0 2px 8px rgba(132,152,89,0.1); }
+
+/*список поездок*/
+.trip-list { display: none; flex-direction: column; gap: 0.6rem; padding: 1rem; padding-bottom: 190px; flex: 1; overflow-y: auto; max-height: 100%; }
+.trip-list.active { display: flex; }
+.trip-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 1rem 1.2rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.3s ease; width: 95%; margin: 0 auto; }
+.trip-card:hover { border-color: var(--accent); box-shadow: 0 10px 28px rgba(132,152,89,0.2); transform: translateY(-6px) scale(1.03); width: 98%; }
+.trip-card-left h4 { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--ink); margin-bottom: 0.2rem; }
+.trip-card-left span { font-size: 0.8rem; color: var(--ink-muted); }
+.trip-card-right { font-size: 1.5rem; color: var(--ink-faint); }
+
+/*кнопка добавить*/
+.btn-add-trip { position: fixed; bottom: calc(var(--nav-h) + 16px); right: 16px; width: 50px; height: 50px; border-radius: 50%; background: var(--accent); color: #fff; border: none; font-size: 1.5rem; cursor: pointer; z-index: 90; box-shadow: var(--shadow); transition: all 0.2s; }
+.btn-add-trip:hover { background: var(--accent-hover); transform: scale(1.05); }
+
+/*модальные окна (общие)*/
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26,22,18,0.6); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
+.modal-overlay.active { display: flex; }
+.modal-content { background: var(--surface); border-radius: var(--r-lg); padding: 1.5rem; width: 100%; max-width: 520px; max-height: 85vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
+.modal-content h3 { font-family: 'Playfair Display', serif; margin-bottom: 1rem; color: var(--ink); }
+.modal-buttons { display: flex; gap: 0.75rem; margin-top: 1.2rem; }
+.modal-buttons .btn-primary { flex: 2; margin-top: 0; }
+
+/*детали поездки*/
+.trip-detail-modal { max-width: 750px !important; max-height: 92vh !important; height: auto !important; min-height: 300px; padding: 2.5rem !important; position: relative; overflow-y: auto; background: #fff !important; }
+.modal-close-btn { position: absolute; top: 10px; right: 14px; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #849859; }
+.trip-detail-city { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; color: #5a6e3a; margin-bottom: 0.1rem; }
+.trip-detail-country { font-family: 'Raleway', sans-serif; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; color: #849859; margin-bottom: 1rem; }
+.trip-detail-info { display: flex; gap: 1rem; font-family: 'Raleway', sans-serif; font-size: 0.8rem; color: #849859; margin-bottom: 1rem; }
+.trip-detail-rating { color: var(--gold); font-weight: 600; }
+.trip-detail-impressions { font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: #3d4a2e; line-height: 1.6; margin-bottom: 1.5rem; }
+.trip-detail-buttons { display: flex; gap: 0.5rem; margin-top: 1rem; }
+.impressions-box { background: rgba(132,152,89,0.06); border: 1px solid rgba(132,152,89,0.1); border-radius: 12px; padding: 1rem 1.2rem; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word; }
+
+/*кнопки в деталях поездки*/
+#btn-show-on-map { background: #a3b87a; color: #fff; border: none; font-family: 'Raleway', sans-serif; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.7rem; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; }
+#btn-show-on-map:hover { background: #8fa86a; }
+#btn-edit-trip { background: #a3b87a; color: #fff; border: none; font-family: 'Raleway', sans-serif; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.7rem; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; }
+#btn-edit-trip:hover { background: #8fa86a; }
+#btn-delete-trip { background: #b5341e; color: #fff; border: none; font-family: 'Raleway', sans-serif; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.7rem; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; }
+#btn-delete-trip:hover { background: #8b1a0e; }
+.btn-small { padding: 0.35rem 0.8rem; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--surface); font-size: 0.8rem; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.btn-small.danger { color: var(--accent); border-color: var(--accent-light); }
+.btn-small.danger:hover { background: var(--accent-light); }
+
+/*фото в деталях*/
+.trip-photos-section { margin-top: 0.5rem; }
+.trip-photos-label { font-family: 'Raleway', sans-serif; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #849859; margin-bottom: 0.5rem; }
+.trip-photos-scroll { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem; }
+.trip-photo-item { width: 160px; height: 120px; background-size: cover; background-position: center; border-radius: 10px; flex-shrink: 0; cursor: pointer; }
+.view-trip-img { width: 100%; max-height: 220px; object-fit: cover; border-radius: var(--r); margin-bottom: 1rem; }
+.view-trip-info { display: flex; gap: 1rem; margin-bottom: 1rem; font-size: 0.85rem; color: var(--ink-muted); }
+.view-trip-rating { color: var(--gold); font-weight: 600; font-size: 0.95rem; }
+.view-trip-impressions { line-height: 1.6; color: var(--ink); margin-bottom: 1rem; }
+.view-buttons { display: flex; gap: 0.5rem; margin-top: 1rem; }
+
+/*фото на весь эран*/
+.fullscreen-photo { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 999; align-items: center; justify-content: center; }
+.fullscreen-photo.active { display: flex; }
+.fullscreen-photo img { max-width: 90%; max-height: 90%; border-radius: 10px; animation: modalIn 0.3s ease; }
+.fullscreen-close { position: absolute; top: 20px; right: 30px; background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; }
+
+/*звезды*/
+.star-rating { display: flex; gap: 0.2rem; cursor: pointer; font-size: 1.5rem; color: #c49012; }
+.star-rating span { transition: transform 0.15s; }
+.star-rating span:hover { transform: scale(1.2); }
+
+/*маркер тип*/
+.marker-type-label { flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.3rem; padding: 0.6rem 0.5rem; border: 2px solid rgba(132,152,89,0.2); border-radius: 10px; cursor: pointer; font-family: 'Raleway', sans-serif; font-size: 0.8rem; font-weight: 600; color: #849859; transition: all 0.2s; }
+.marker-type-label:has(input:checked) { border-color: #849859; background: rgba(132,152,89,0.08); color: #5a6e3a; box-shadow: 0 2px 8px rgba(132,152,89,0.12); }
+.marker-type-label input { display: none; }
+#modal-marker .modal-content { max-width: 400px; }
+#modal-marker h3 { font-family: 'Playfair Display', serif; margin-bottom: 1rem; color: var(--ink); }
+
+/*подтверждения*/
+#modal-confirm-delete .modal-content { max-width: 380px; text-align: center; opacity: 0; transform: translateY(20px) scale(0.95); animation: modalIn 0.3s ease forwards; border-radius: 16px; }
+#btn-confirm-delete { background: var(--accent); color: #fff; border: none; border-radius: var(--r); padding: 0.65rem 1.2rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; cursor: pointer; flex: 2; }
+#btn-confirm-delete:hover { background: var(--accent-hover); }
+#modal-confirm-logout .modal-content { opacity: 0; transform: translateY(20px) scale(0.95); animation: modalIn 0.3s ease forwards; border-radius: 16px; }
+#modal-confirm-delete-trip .modal-content { opacity: 0; transform: translateY(20px) scale(0.95); animation: modalIn 0.3s ease forwards; border-radius: 16px; }
+
+/*поздравление*/
+.congrats-modal { max-width: 420px !important; text-align: center; padding: 2rem !important; }
+#modal-congrats .modal-content { animation: modalIn 0.4s ease forwards; border-radius: 16px; }
+.congrats-icon-img { width: 80px; height: 80px; object-fit: contain; margin-bottom: 0.8rem; }
+.congrats-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; color: #5a6e3a; margin-bottom: 0.5rem; }
+.congrats-subtitle { font-family: 'Raleway', sans-serif; font-size: 0.8rem; color: #849859; margin-bottom: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.congrats-status { display: inline-block; background: rgba(132,152,89,0.1); border: 1px solid rgba(132,152,89,0.2); border-radius: 20px; padding: 0.5rem 1.5rem; font-family: 'Raleway', sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #5a6e3a; margin-bottom: 1rem; }
+.congrats-text { font-family: 'Raleway', sans-serif; font-size: 0.8rem; color: #849859; line-height: 1.5; margin-bottom: 1.5rem; }
+#btn-close-congrats { width: auto; padding: 0.7rem 2.5rem; }
+
+/*анимации*/
+.fade-up { opacity: 0; transform: translateY(30px); animation: fadeUp 1.2s ease forwards; }
+.fade-up.delay-1 { animation-delay: 0.3s; }
+.fade-up.delay-2 { animation-delay: 0.6s; }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+@keyframes modalIn { to { opacity: 1; transform: translateY(0) scale(1); } }
+
+/*адаптивность*/
+@media (max-width: 768px) {
+  .landing-hero { flex-direction: column; text-align: center; gap: 2rem; padding: 2rem; }
+  .landing-left { margin-right: 0; }
+  .landing-title { font-size: 2.4rem; }
+  .landing-desc { max-width: 100%; margin-left: auto; margin-right: auto; }
+  .landing-image { max-height: 260px; }
+  .welcome-features { flex-direction: column; }
+}
