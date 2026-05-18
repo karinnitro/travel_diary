@@ -54,7 +54,7 @@ body {
 .landing-hero { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1100px; margin: 0 auto; padding: 2rem; gap: 3rem; }
 .landing-left { flex: 1; max-width: 480px; }
 .landing-right { flex: 1; display: flex; align-items: center; justify-content: flex-end; }
-.landing-title { font-family: 'Playfair Display', serif; font-size: 4.5rem; font-weight: 600; font-style: italic; color: #5a6e3a; line-height: 1.1; margin-bottom: 1.2rem; letter-spacing: -1px; }
+.landing-title { font-family: 'El Messiri', sans-serif; font-size: 4.5rem; font-weight: 600; font-style: italic; color: #5a6e3a; line-height: 1.1; margin-bottom: 1.2rem; letter-spacing: -1px; }
 .landing-title-small { display: block; font-size: 1.8rem; font-weight: 400; font-style: italic; color: #849859; margin-bottom: 0.2rem; letter-spacing: 0; }
 .landing-desc { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 500; color: #849859; line-height: 1.6; margin-bottom: 2rem; opacity: 0.9; max-width: 460px; }
 .landing-btn { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.85rem 2.2rem; background: #849859; color: #fff; border: none; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500; cursor: pointer; transition: all 0.25s; letter-spacing: 0.02em; box-shadow: 0 4px 16px rgba(132,152,89,0.25); }
@@ -69,7 +69,7 @@ body {
 #auth-screen::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.35); z-index: 0; }
 #auth-screen .auth-card { position: relative; z-index: 1; }
 .auth-card { background: var(--parchment); border-radius: var(--r-lg); padding: 3rem 2.5rem; width: 100%; max-width: 480px; box-shadow: var(--shadow-lg); position: relative; z-index: 1; opacity: 0; transform: translateY(40px); animation: fadeUp 0.8s ease forwards; }
-.auth-logo { font-family: 'Playfair Display', serif; font-size: 3.2rem; font-weight: 600; font-style: italic; color: #5a6e3a; text-align: center; margin-bottom: 0.25rem; letter-spacing: -0.5px; }
+.auth-logo { font-family: 'El Messiri', sans-serif; font-size: 3.2rem; font-weight: 600; color: #5a6e3a; text-align: center; margin-bottom: 0.25rem; letter-spacing: -0.5px; }
 .auth-tagline { font-family: 'Cormorant Garamond', serif; text-align: center; color: #5a6e3a; font-size: 1.5rem; font-weight: 500; margin-bottom: 2rem; letter-spacing: 0.02em; }
 .auth-tabs { display: flex; background: var(--parchment-dark); border-radius: 8px; padding: 3px; margin-bottom: 1.5rem; gap: 3px; }
 .auth-tab { flex: 1; padding: 0.5rem; text-align: center; border-radius: 6px; cursor: pointer; font-size: 0.88rem; font-weight: 500; transition: all 0.2s; border: none; background: none; color: var(--ink-muted); font-family: 'DM Sans', sans-serif; }
@@ -155,7 +155,7 @@ body {
 .placeholder-panel p { font-size: 0.9rem; line-height: 1.6; }
 
 /*имя в загловке*/
-.header-brand { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 600; font-style: italic; color: #5a6e3a; margin-left: auto; }
+.header-brand { font-family: 'El Messiri', sans-serif; font-size: 1.5rem; font-weight: 600; font-style: italic; color: #5a6e3a; margin-left: auto; }
 
 /*карта*/
 #panel-map .section-header { display: none; }

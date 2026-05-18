@@ -3,18 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TripMap</title>
+  <title>Там, где я</title>
   <link rel="icon" type="image/png" href="/ico.png">
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans&family=Raleway:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
-</head>
+  <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet">
 <body>
 
   <!-- приветственный экран -->
   <div id="landing-screen" class="screen">
     <div class="landing-hero">
       <div class="landing-left">
-        <h1 class="landing-title">Welcome to TripMap</h1>
+        <h1 class="landing-title">Там, где я</h1>
         <p class="landing-desc fade-up">Ваш личный дневник путешественника. Отмечайте посещённые места на карте, планируйте будущие поездки и храните воспоминания в одном месте.</p>
         <button class="landing-btn fade-up delay-1" id="btn-goto-auth">Начать <span class="landing-arrow">→</span></button>
       </div>
@@ -25,7 +24,7 @@
   <!-- вход/регистрация -->
   <div id="auth-screen" class="screen">
     <div class="auth-card">
-      <div class="auth-logo"><em>TripMap</em></div>
+      <div class="auth-logo"><em>Там,где я</em></div>
       <p class="auth-tagline">Дневник путешественника</p>
       <div class="auth-tabs">
         <button class="auth-tab active" data-tab="login">Вход</button>
@@ -67,11 +66,11 @@
   <div id="main-screen" class="screen">
     <div class="main-content">
       <div class="section-panel active" id="panel-map">
-        <div class="map-header"><h2>Карта мира</h2><span class="header-brand">TripMap</span></div>
+        <div class="map-header"><h2>Карта мира</h2><span class="header-brand">Там, где я</span></div>
         <div id="map-container"></div>
       </div>
       <div class="section-panel" id="panel-profile">
-        <div class="profile-header"><h2>Личный кабинет</h2><span class="header-brand">TripMap</span></div>
+        <div class="profile-header"><h2>Личный кабинет</h2><span class="header-brand">Там, где я</span></div>
         <div class="profile-content">
           <div class="profile-top">
             <div class="profile-left">
@@ -95,7 +94,7 @@
         </div>
       </div>
       <div class="section-panel" id="panel-trips">
-        <div class="trips-header"><h2>Мои путешествия</h2><span class="header-brand">TripMap</span></div>
+        <div class="trips-header"><h2>Мои путешествия</h2><span class="header-brand">Там, где я</span></div>
         <div class="trip-search"><input type="text" id="trip-search-input" placeholder="Поиск по стране или городу"></div>
         <div class="trip-tabs"><button class="trip-tab active" data-tab="visited">Посещённые</button><button class="trip-tab" data-tab="planned">Запланированные</button></div>
         <div class="trip-list active" id="list-visited"></div>
