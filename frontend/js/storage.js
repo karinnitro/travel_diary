@@ -118,4 +118,41 @@ const Storage = {
       method: 'DELETE',
     });
   },
-};
+
+      async deleteMarker(markerId) {
+      return await this.request('/api/markers/' + markerId, {
+        method: 'DELETE',
+      });
+    },
+
+    // ─── ДРУЗЬЯ ───────────────────────────────
+
+    async searchUsers(query) {
+      const data = await this.request('/api/users/search?q=' + encodeURIComponent(query));
+      return data;
+    },
+
+    async sendFriendRequest(userId) {
+      return await this.request('/api/friends/request', {
+        method: 'POST',
+        body: JSON.stringify({ user_id: userId })
+      });
+    },
+
+    async getFriendRequests() {
+      return await this.request('/api/friends/requests');
+    },
+
+    async respondToRequest(requestId, action) {
+      return await this.request('/api/friends/respond', {
+        method: 'POST',
+        body: JSON.stringify({ request_id: requestId, action })
+      });
+    },
+
+    async getFriends() {
+      return await this.request('/api/friends');
+    },
+  };
+
+

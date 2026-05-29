@@ -37,6 +37,8 @@ def add_trip():
         impressions = data.get('impressions', ''),
         rating      = data.get('rating'),
         photo       = data.get('photo'),
+        photo_key=data.get('photo_key'),
+        photos=data.get('photos_json'),
         is_planned  = data.get('is_planned', False),
         user_id     = session['user_id']
     )
@@ -65,6 +67,8 @@ def update_trip(trip_id):
     trip.impressions = data.get('impressions', trip.impressions)
     trip.rating      = data.get('rating',      trip.rating)
     trip.photo       = data.get('photo',       trip.photo)
+    trip.photo_key = data.get('photo_key', trip.photo_key)
+    trip.photos = data.get('photos', trip.photos)
     trip.is_planned  = data.get('is_planned',  trip.is_planned)
 
     db.session.commit()

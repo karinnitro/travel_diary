@@ -105,7 +105,6 @@ const MapModule = {
       return;
     }
 
-    //создаю поездку
     const tripResult = await Storage.addTrip({
       country: country,
       city: city,
@@ -114,6 +113,8 @@ const MapModule = {
       impressions: '',
       rating: null,
       photo: null,
+      photos: [],
+      photo_key: null,
       is_planned: color === 'blue'
     });
 

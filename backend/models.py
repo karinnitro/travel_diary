@@ -57,6 +57,18 @@ class User(UserMixin, db.Model):
             return 'Любитель'
         else:
             return 'Новичок'
+        
+    @property
+    def friends(self):
+        """Список ID друзей (принятые заявки)"""
+        sent = FriendRequest.query.filter_by(from_user_id=self.id, status='accepted').all()
+        received = FriendRequest.query.filter_by(to_user_id=self.id, status='accepted').all()
+        friend_ids = set()
+        for r in sent:
+            friend_ids.add(r.to_user_id)
+        for r in received:
+            friend_ids.add(r.from_user_id)
+        return list(friend_ids)
 
 #поездки
 class Trip(db.Model):
@@ -69,7 +81,9 @@ class Trip(db.Model):
     date        = db.Column(db.String(20), nullable=True)       
     impressions = db.Column(db.Text, nullable=True)             #текст впечатлений
     rating      = db.Column(db.Integer, nullable=True)          
-    photo       = db.Column(db.String(200), nullable=True)      
+    photo       = db.Column(db.String(200), nullable=True) 
+    photos = db.Column(db.Text, nullable=True)            # JSON-строка с фото
+    photo_key = db.Column(db.String(100), nullable=True)  # ключ в localStorage     
     is_planned  = db.Column(db.Boolean, default=False)         
     created_at  = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -85,6 +99,8 @@ class Trip(db.Model):
             'impressions': self.impressions,
             'rating':      self.rating,
             'photo':       self.photo,
+            'photos':      self.photos,
+            'photo_key':   self.photo_key,
             'is_planned':  self.is_planned,
             'created_at':  self.created_at.isoformat() if self.created_at else None,
         }
@@ -94,15 +110,15 @@ class Trip(db.Model):
 class Marker(db.Model):
     __tablename__ = 'markers'
 
-    id        = db.Column(db.Integer, primary_key=True)
-    latitude  = db.Column(db.Float, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
-    country   = db.Column(db.String(100), nullable=True)
-    city      = db.Column(db.String(100), nullable=True)
-    color     = db.Column(db.String(20), default='blue')        
-    trip_id   = db.Column(db.Integer, db.ForeignKey('trips.id'), nullable=True)
+    country = db.Column(db.String(100), nullable=True)
+    city = db.Column(db.String(100), nullable=True)
+    color = db.Column(db.String(20), default='blue')        
+    trip_id = db.Column(db.Integer, db.ForeignKey('trips.id'), nullable=True)
 
-    user_id   = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     def to_dict(self):
         return {
@@ -113,4 +129,29 @@ class Marker(db.Model):
             'city':      self.city,
             'color':     self.color,
             'trip_id':   self.trip_id,
+        }
+    
+class FriendRequest(db.Model):
+    __tablename__ = 'friend_requests'
+
+    id = db.Column(db.Integer, primary_key=True)
+    from_user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    to_user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    status = db.Column(db.String(20), default='pending')  # pending / accepted / rejected
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    from_user = db.relationship('User', foreign_keys=[from_user_id], backref='sent_requests')
+    to_user = db.relationship('User', foreign_keys=[to_user_id], backref='received_requests')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'from_user_id': self.from_user_id,
+            'from_name': self.from_user.name,
+            'from_login': self.from_user.login,
+            'to_user_id': self.to_user_id,
+            'to_name': self.to_user.name,
+            'to_login': self.to_user.login,
+            'status': self.status,
+            'created_at': self.created_at.isoformat()
         }

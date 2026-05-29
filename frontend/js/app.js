@@ -146,13 +146,23 @@ const App = {
     if (name === 'profile') {
       ProfileModule.init();         // загрузка профиля
     }
+    document.querySelectorAll('input[type="text"], input[type="date"], textarea').forEach(el => {
+      if (el.id !== 'login-username' && el.id !== 'login-password' && 
+          el.id !== 'reg-name' && el.id !== 'reg-username' && 
+          el.id !== 'reg-password' && el.id !== 'reg-confirm' &&
+          el.id !== 'trip-search-input' && el.id !== 'friend-search-input') {
+        el.value = '';
+      }
+    });
   },
 
  //выход из системы
   async logout() {
     await Storage.logout();
     this.currentUser = null;
+    // очищаем временные данные
     sessionStorage.removeItem('currentScreen');
+    sessionStorage.removeItem('currentSection');
     this.showScreen('landing-screen');
   },
 

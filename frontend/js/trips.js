@@ -79,6 +79,19 @@ const TripsModule = {
       }
     });
 
+    document.getElementById('btn-cancel-delete-photo').addEventListener('click', () => {
+      document.getElementById('modal-confirm-delete-photo').classList.remove('active');
+    });
+    document.getElementById('btn-confirm-delete-photo').addEventListener('click', () => {
+      this.confirmDeletePhoto();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (!document.getElementById('fullscreen-photo').classList.contains('active')) return;
+      if (e.key === 'ArrowRight') this.nextFullscreenPhoto();
+      if (e.key === 'ArrowLeft') this.prevFullscreenPhoto();
+      if (e.key === 'Escape') document.getElementById('fullscreen-photo').classList.remove('active');
+    });
+
     this.loadTrips();
   },
 
@@ -131,13 +144,12 @@ const TripsModule = {
 
   createTripCard(trip) {
     const div = document.createElement('div');
-    div.className = 'trip-card';
+    div.className = 'trip-card' + (trip.is_planned ? ' planned' : '');
     div.innerHTML = `
       <div class="trip-card-left">
         <h4>${trip.city}, ${trip.country}</h4>
         <span>${trip.year} г.</span>
       </div>
-      <div class="trip-card-right">→</div>
     `;
     div.addEventListener('click', () => this.viewTrip(trip));
     return div;
@@ -147,15 +159,21 @@ const TripsModule = {
 
   //открытие окна
   viewTrip(trip) {
-    //фото
     let photos = [];
-    const photoKey = trip.photo_key || ('td_trip_photos_' + trip.id);
-    const saved = localStorage.getItem(photoKey);
-    if (saved) {
-      try { photos = JSON.parse(saved); } catch(e) { photos = []; }
+    if (trip.photo_key) {
+      const saved = localStorage.getItem(trip.photo_key);
+      if (saved) {
+        try { photos = JSON.parse(saved); } catch(e) { photos = []; }
+      }
     }
-    if (photos.length === 0 && trip.photos) photos = trip.photos;
-    if (photos.length === 0 && trip.photo)  photos = [trip.photo];
+    if (photos.length === 0 && trip.photos && trip.photos.length > 0) {
+      photos = trip.photos;
+    }
+    if (photos.length === 0 && trip.photo && trip.photo !== 'null' && trip.photo !== null) {
+      photos = [trip.photo];
+    }
+
+    this.currentViewPhotos = photos;
 
     let photosHTML = '';
     if (photos.length > 0) {
@@ -164,10 +182,10 @@ const TripsModule = {
           <div class="trip-photos-label">Фотографии (${photos.length})</div>
           <div class="trip-photos-scroll">
             ${photos.map(photo => `
-              <div class="trip-photo-item" style="background-image: url('${photo}')" onclick="TripsModule.openFullscreenPhoto('${photo}')"></div>
+              <div class="trip-photo-item" style="background-image: url('${photo}')" onclick="TripsModule.openFullscreenPhoto('${photo}', TripsModule.currentViewPhotos, ${photos.indexOf(photo)})" oncontextmenu="TripsModule.deletePhoto(event, ${trip.id}, '${photo}'); return false;"></div>
             `).join('')}
           </div>
-        </div>`;
+        </div>`;  
     }
 
     //содержимое
@@ -231,6 +249,19 @@ const TripsModule = {
     });
 
     document.getElementById('modal-view').classList.add('active');
+      if (photos.length > 1) {
+      setTimeout(() => {
+        const inner = document.querySelector('.trip-photos-inner');
+        if (inner) {
+          document.getElementById('photo-scroll-left').addEventListener('click', () => {
+            inner.scrollBy({ left: -170, behavior: 'smooth' });
+          });
+          document.getElementById('photo-scroll-right').addEventListener('click', () => {
+            inner.scrollBy({ left: 170, behavior: 'smooth' });
+          });
+        }
+      }, 100);
+    }
   },
 
   //отображение звезд
@@ -240,10 +271,26 @@ const TripsModule = {
     return '★'.repeat(filled) + '☆'.repeat(5 - filled);
   },
 
-  //открытие фото на весь эран
-  openFullscreenPhoto(src) {
+  currentFullscreenPhotos: [],
+  currentFullscreenIndex: 0,
+
+  openFullscreenPhoto(src, allPhotos, index) {
+    this.currentFullscreenPhotos = allPhotos || [src];
+    this.currentFullscreenIndex = index || 0;
     document.getElementById('fullscreen-img').src = src;
     document.getElementById('fullscreen-photo').classList.add('active');
+  },
+
+  nextFullscreenPhoto() {
+    if (this.currentFullscreenPhotos.length === 0) return;
+    this.currentFullscreenIndex = (this.currentFullscreenIndex + 1) % this.currentFullscreenPhotos.length;
+    document.getElementById('fullscreen-img').src = this.currentFullscreenPhotos[this.currentFullscreenIndex];
+  },
+
+  prevFullscreenPhoto() {
+    if (this.currentFullscreenPhotos.length === 0) return;
+    this.currentFullscreenIndex = (this.currentFullscreenIndex - 1 + this.currentFullscreenPhotos.length) % this.currentFullscreenPhotos.length;
+    document.getElementById('fullscreen-img').src = this.currentFullscreenPhotos[this.currentFullscreenIndex];
   },
 
   //добавление/редактирование
@@ -253,7 +300,13 @@ const TripsModule = {
     document.getElementById('modal-title').textContent = 'Добавить путешествие';
     document.getElementById('form-trip').reset();
     document.getElementById('trip-id').value = '';
+    document.getElementById('trip-country').value = '';
+    document.getElementById('trip-city').value = '';
+    document.getElementById('trip-date').value = '';
+    document.getElementById('trip-impressions').value = '';
     document.getElementById('trip-rating').value = '';
+    document.getElementById('trip-planned').checked = false;
+    document.getElementById('impressions-count').textContent = '0/500';
     document.querySelectorAll('#star-rating span').forEach(s => { s.textContent = '☆'; });
     document.getElementById('modal-trip').classList.add('active');
   },
@@ -296,6 +349,18 @@ const TripsModule = {
     const photoFiles = document.getElementById('trip-photo').files;
     const dateValue = document.getElementById('trip-date').value;
 
+    // получаем старые фото, если редактируем
+    let oldPhotos = [];
+    if (id) {
+      const oldPhotoKey = 'td_trip_photos_' + id;
+      const savedOld = localStorage.getItem(oldPhotoKey);
+      if (savedOld) {
+        try { oldPhotos = JSON.parse(savedOld); } catch(e) { oldPhotos = []; }
+      }
+    }
+    console.log('ID:', id, 'Старых фото:', oldPhotos.length);
+
+
     const tripData = {
       country:     document.getElementById('trip-country').value.trim(),
       city:        document.getElementById('trip-city').value.trim(),
@@ -303,7 +368,7 @@ const TripsModule = {
       date:        dateValue,
       impressions: document.getElementById('trip-impressions').value.trim(),
       rating:      document.getElementById('trip-rating').value || null,
-      photos:      [],
+      photos:      oldPhotos,
       is_planned:  iso_planned
     };
 
@@ -317,25 +382,46 @@ const TripsModule = {
       for (let i = 0; i < photoFiles.length; i++) {
         const reader = new FileReader();
         const result = await new Promise((resolve) => {
-          reader.onload = (e) => resolve(e.target.result);
+          reader.onload = (e) => {
+            // сжимаем фото
+            const img = new Image();
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              const maxSize = 800;
+              let w = img.width, h = img.height;
+              if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+              else { w = Math.round(w * maxSize / h); h = maxSize; }
+              canvas.width = w; canvas.height = h;
+              canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+              resolve(canvas.toDataURL('image/jpeg', 0.6));
+            };
+            img.src = e.target.result;
+          };
           reader.readAsDataURL(photoFiles[i]);
         });
         tripData.photos.push(result);
       }
     }
-
+    tripData.photos_json = JSON.stringify(tripData.photos);
+    delete tripData.photos;
     await this.doSaveTrip(id, tripData);
   },
 
   //отправка данных на сервер и обновление маркеров и списка
   async doSaveTrip(id, tripData) {
-    // сохраняем фото в localStorage
-    if (tripData.photos.length > 0) {
+    const photosArray = tripData.photos_json ? JSON.parse(tripData.photos_json) : [];
+    if (photosArray.length > 0 || id) {
       const photoKey = 'td_trip_photos_' + (id || Date.now());
-      localStorage.setItem(photoKey, JSON.stringify(tripData.photos));
-      tripData.photo_key = photoKey;
-      tripData.photo = tripData.photos[0];
+      if (id) {
+        localStorage.setItem('td_trip_photos_' + id, JSON.stringify(photosArray));
+        tripData.photo_key = 'td_trip_photos_' + id;
+      } else {
+        localStorage.setItem(photoKey, JSON.stringify(photosArray));
+        tripData.photo_key = photoKey;
+      }
+      tripData.photo = JSON.stringify(photosArray);
     }
+    console.log('Сохранено в localStorage:', JSON.parse(localStorage.getItem('td_trip_photos_' + id)).length, 'фото');
 
     let result;
     if (id) {
@@ -343,6 +429,7 @@ const TripsModule = {
     } else {
       result = await Storage.addTrip(tripData);
     }
+    // ... дальше без изменений
 
     if (result.ok) {
       //обновление цвета маркера при редактировании
@@ -402,5 +489,41 @@ const TripsModule = {
     } else {
       alert('Ошибка сохранения: ' + (result.error || 'неизвестная ошибка'));
     }
+  },
+
+   deletePhoto(e, tripId, photoSrc) {
+    e.preventDefault();
+    this.pendingPhotoDelete = { tripId, photoSrc };
+    document.getElementById('modal-confirm-delete-photo').classList.add('active');
+  },
+
+  async confirmDeletePhoto() {
+    const { tripId, photoSrc } = this.pendingPhotoDelete;
+    if (!tripId) return;
+    
+    const photoKey = 'td_trip_photos_' + tripId;
+    const saved = localStorage.getItem(photoKey);
+    if (!saved) return;
+    
+    let photos = JSON.parse(saved);
+    photos = photos.filter(p => p !== photoSrc);
+    
+    if (photos.length > 0) {
+      localStorage.setItem(photoKey, JSON.stringify(photos));
+    } else {
+      localStorage.removeItem(photoKey);
+    }
+    
+    await Storage.updateTrip(tripId, {
+      photo: photos.length > 0 ? JSON.stringify(photos) : null,
+      photos: JSON.stringify(photos),
+      photo_key: photos.length > 0 ? photoKey : null
+    });
+    
+    document.getElementById('modal-confirm-delete-photo').classList.remove('active');
+    
+    const trips = await Storage.getTrips();
+    const updatedTrip = trips.find(t => t.id === tripId);
+    if (updatedTrip) this.viewTrip(updatedTrip);
   },
 };
