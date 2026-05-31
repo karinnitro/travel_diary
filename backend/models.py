@@ -17,7 +17,8 @@ class User(UserMixin, db.Model):
     created_at    = db.Column(db.DateTime, default=datetime.utcnow)
     avatar        = db.Column(db.String(200), nullable=True)        
     gender        = db.Column(db.String(10), nullable=True)         
-    birth_date    = db.Column(db.String(20), nullable=True)         
+    birth_date    = db.Column(db.String(20), nullable=True)  
+    is_admin = db.Column(db.Boolean, default=False)       
 
     #связи с другими таблицами
     trips   = db.relationship('Trip',   backref='user', lazy=True, cascade='all, delete-orphan')

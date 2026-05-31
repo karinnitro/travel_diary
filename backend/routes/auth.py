@@ -1,4 +1,6 @@
-"""регистрация, вход, выход, проверка сессии"""
+"""
+регистрация, вход, выход, проверка сессии
+"""
 from flask import Blueprint, request, jsonify, session
 from models import db, User
 
@@ -43,6 +45,7 @@ def register():
             'id':         user.id,
             'login':      user.login,
             'name':       user.name,
+            'is_admin':   user.is_admin,
             'created_at': user.created_at.isoformat()
         }
     }), 201
@@ -72,6 +75,7 @@ def login():
             'id':         user.id,
             'login':      user.login,
             'name':       user.name,
+            'is_admin':   user.is_admin,
             'created_at': user.created_at.isoformat()
         }
     })
@@ -103,6 +107,7 @@ def get_me():
             'id':               user.id,
             'login':            user.login,
             'name':             user.name,
+            'is_admin':         user.is_admin,
             'created_at':       user.created_at.isoformat(),
             'status':           user.status,
             'visited_countries': user.visited_countries,

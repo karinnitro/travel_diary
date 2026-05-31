@@ -1,14 +1,13 @@
-//уравление экранами, навигацией, переходами
+//управление экранами, навигацией, переходами
 const App = {
-  currentUser: null,           // текущий авторизованный пользователь
+  currentUser: null,
 
- //Инициализация приложения
   init() {
-    Auth.init();               // авторизация
-    this.bindNav();            // нижнее меню
-    this.bindWelcome();        // кнопки на велком экране
-    this.bindLanding();        // кнопка "начать" на приветственном экране
-    this.restoreScreen();      // восстановление экрана после обновления
+    Auth.init();
+    this.bindNav();
+    this.bindWelcome();
+    this.bindLanding();
+    this.restoreScreen();
   },
 
   showScreen(id) {
@@ -17,14 +16,34 @@ const App = {
     sessionStorage.setItem('currentScreen', id);
   },
 
-  // появление велком экрана после входа
   showWelcome(user) {
     this.currentUser = user;
+
+    // если админ — только админ-панель
+    if (user.is_admin) {
+      document.querySelector('.bottom-nav').innerHTML = '<button class="nav-item" data-section="logout"><span class="nav-label">Выйти</span></button>';
+      document.querySelector('.nav-item[data-section="logout"]').addEventListener('click', () => this.logout());
+      this.showScreen('main-screen');
+      setTimeout(() => {
+        document.querySelectorAll('.section-panel').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+        const panel = document.getElementById('panel-admin');
+        if (panel) { panel.classList.add('active'); panel.style.display = 'block'; }
+        AdminModule.init();
+      }, 100);
+      return;
+    }
+
+    // обычный пользователь — восстанавливаем нижнюю панель
+    document.querySelector('.bottom-nav').innerHTML = `
+      <button class="nav-item active" data-section="map"><span class="nav-label">Карта</span></button>
+      <button class="nav-item" data-section="profile"><span class="nav-label">Кабинет</span></button>
+      <button class="nav-item" data-section="trips"><span class="nav-label">Путешествия</span></button>
+    `;
+    this.bindNav();
+
     document.getElementById('welcome-name').textContent = user.name;
 
-    const currentActive = document.querySelector('.screen.active');
-
-    // плавное скрытие текущего экрана
+  const currentActive = document.querySelector('.screen.active');
     if (currentActive) {
       currentActive.style.transition = 'opacity 0.4s ease';
       currentActive.style.opacity = '0';
@@ -35,12 +54,9 @@ const App = {
         currentActive.classList.remove('active');
         currentActive.style.opacity = '1';
       }
-
-      // показ велком экран с анимацией
       const welcome = document.getElementById('welcome-screen');
       welcome.classList.add('active');
       welcome.style.opacity = '0';
-
       setTimeout(() => {
         welcome.style.transition = 'opacity 0.5s ease';
         welcome.style.opacity = '1';
@@ -48,19 +64,16 @@ const App = {
     }, 400);
   },
 
-  //переход на главный экран (на карту)
   showMain() {
     this.showScreen('main-screen');
     this.switchSection('map');
   },
 
- //привязка кнопок велком экоана
   bindWelcome() {
     document.getElementById('btn-start').addEventListener('click', () => this.showMain());
     document.getElementById('btn-logout-welcome').addEventListener('click', () => this.logout());
   },
 
-  //привяязка кнопки "Начать" на приветственном экране
   bindLanding() {
     const btn = document.getElementById('btn-goto-auth');
     if (btn) {
@@ -71,22 +84,16 @@ const App = {
   fadeToScreen(screenId) {
     const landing = document.getElementById('landing-screen');
     const target = document.getElementById(screenId);
-
-    // скрываем приветственны экран
     landing.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
     landing.style.opacity = '0';
     landing.style.transform = 'scale(0.95)';
-
     setTimeout(() => {
       landing.classList.remove('active');
       landing.style.opacity = '1';
       landing.style.transform = 'scale(1)';
-
-      // показываем целевой экран
       target.classList.add('active');
       target.style.opacity = '0';
       target.style.transform = 'scale(1.05)';
-
       setTimeout(() => {
         target.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
         target.style.opacity = '1';
@@ -95,15 +102,19 @@ const App = {
     }, 500);
   },
 
- //привязка кнопок нижнего меню
   bindNav() {
     document.querySelectorAll('.nav-item').forEach(btn => {
-      btn.addEventListener('click', () => this.switchSection(btn.dataset.section));
+      btn.addEventListener('click', () => {
+        if (btn.dataset.section === 'logout') {
+          this.logout();
+        } else {
+          this.switchSection(btn.dataset.section);
+        }
+      });
     });
   },
 
   switchSection(name) {
-    // сброс активных кнопок меню
     document.querySelectorAll('.nav-item').forEach(b => {
       b.classList.remove('active');
       b.style.background = 'transparent';
@@ -111,44 +122,43 @@ const App = {
       b.style.boxShadow = 'none';
     });
 
-    // подсветка активной кнопки
-    const activeBtn = document.querySelector(`.nav-item[data-section="${name}"]`);
-    activeBtn.classList.add('active');
-    activeBtn.style.background = 'rgba(132, 152, 89, 0.1)';
-    activeBtn.style.color = '#5a6e3a';
-    activeBtn.style.boxShadow = '0 2px 8px rgba(132, 152, 89, 0.1)';
+    if (name === 'logout') {
+      this.logout();
+      return;
+    }
 
-    // скрываю все панели
+    const activeBtn = document.querySelector(`.nav-item[data-section="${name}"]`);
+    if (activeBtn) {
+      activeBtn.classList.add('active');
+      activeBtn.style.background = 'rgba(132, 152, 89, 0.1)';
+      activeBtn.style.color = '#5a6e3a';
+      activeBtn.style.boxShadow = '0 2px 8px rgba(132, 152, 89, 0.1)';
+    }
+
     document.querySelectorAll('.section-panel').forEach(p => {
       p.classList.remove('active');
       p.style.display = 'none';
     });
 
-    // показываю нужную панель
     const panel = document.getElementById('panel-' + name);
-    panel.classList.add('active');
-    panel.style.display = 'block';
+    if (panel) {
+      panel.classList.add('active');
+      panel.style.display = 'block';
+    }
 
-    // сохраняю текущий раздел
     sessionStorage.setItem('currentSection', name);
 
-    // инициализация модулей
     if (name === 'map') {
-      if (!MapModule.map) {
-        MapModule.init();           // первый запуск карты
-      } else {
-        MapModule.loadMarkers();    // обновление маркеров
-      }
+      if (!MapModule.map) { MapModule.init(); }
+      else { MapModule.loadMarkers(); }
     }
-    if (name === 'trips') {
-      TripsModule.init();           // загрузка списка поездок
-    }
-    if (name === 'profile') {
-      ProfileModule.init();         // загрузка профиля
-    }
+    if (name === 'trips') { TripsModule.init(); }
+    if (name === 'profile') { ProfileModule.init(); }
+    if (name === 'admin') { AdminModule.init(); }
+
     document.querySelectorAll('input[type="text"], input[type="date"], textarea').forEach(el => {
-      if (el.id !== 'login-username' && el.id !== 'login-password' && 
-          el.id !== 'reg-name' && el.id !== 'reg-username' && 
+      if (el.id !== 'login-username' && el.id !== 'login-password' &&
+          el.id !== 'reg-name' && el.id !== 'reg-username' &&
           el.id !== 'reg-password' && el.id !== 'reg-confirm' &&
           el.id !== 'trip-search-input' && el.id !== 'friend-search-input') {
         el.value = '';
@@ -156,26 +166,21 @@ const App = {
     });
   },
 
- //выход из системы
   async logout() {
     await Storage.logout();
     this.currentUser = null;
-    // очищаем временные данные
     sessionStorage.removeItem('currentScreen');
     sessionStorage.removeItem('currentSection');
     this.showScreen('landing-screen');
   },
 
-  //восстановление экрана после обновления страницы
   restoreScreen() {
     const savedScreen = sessionStorage.getItem('currentScreen');
     const savedSection = sessionStorage.getItem('currentSection') || 'map';
-
     if (!this.currentUser && !savedScreen) {
       this.showScreen('landing-screen');
       return;
     }
-
     if (savedScreen === 'main-screen') {
       this.showScreen('main-screen');
       this.switchSection(savedSection);
@@ -187,5 +192,4 @@ const App = {
   },
 };
 
-// запуск приложения после загрузки 
 document.addEventListener('DOMContentLoaded', () => App.init());

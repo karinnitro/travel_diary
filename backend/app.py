@@ -21,13 +21,15 @@ def create_app():
     from routes.trips import trips_bp        # круд поездок
     from routes.markers import markers_bp    # маркеры на карте
     from routes.profile import profile_bp 
-    from routes.friends import friends_bp   # личный кабинет
+    from routes.friends import friends_bp
+    from routes.admin import admin_bp   
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(trips_bp)
     app.register_blueprint(markers_bp)
     app.register_blueprint(profile_bp)
     app.register_blueprint(friends_bp)
+    app.register_blueprint(admin_bp)
 
     # путь к папке frontend 
     FRONTEND_DIR = os.path.join(

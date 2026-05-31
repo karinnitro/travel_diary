@@ -365,6 +365,28 @@ body {
 #modal-confirm-logout .modal-content { opacity: 0; transform: translateY(20px) scale(0.95); animation: modalIn 0.3s ease forwards; border-radius: 16px; }
 #modal-confirm-delete-trip .modal-content { opacity: 0; transform: translateY(20px) scale(0.95); animation: modalIn 0.3s ease forwards; border-radius: 16px; }
 
+/*админ*/
+.admin-header { background: #ffffff; padding: 1rem 1.5rem; border-bottom: 1px solid rgba(132,152,89,0.1); display: flex; align-items: center; }
+.admin-header h2 { font-family: 'Raleway', sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #4b5b31; margin: 0; }
+.admin-stats { padding: 1.5rem; }
+.admin-users { padding: 0 1.5rem; }
+.admin-users h3 { font-family: 'Raleway', sans-serif; font-size: 1rem; font-weight: 700; color: #5a6e3a; text-transform: uppercase; margin-bottom: 0.5rem; }
+#panel-admin { background: linear-gradient(to right, #c8d5a8 0%, #e2e8d0 50%, #f7f4d5 100%); min-height: 100vh; }
+.admin-header { background: #ffffff; padding: 1rem 1.5rem; border-bottom: 1px solid rgba(132,152,89,0.1); display: flex; align-items: center; }
+.admin-header h2 { font-family: 'Raleway', sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #4b5b31; margin: 0; }
+.admin-stats { padding: 1.5rem; display: flex; gap: 1rem; justify-content: center; }
+.admin-stat-card { background: rgba(255,255,255,0.7); border: 1px solid rgba(132,152,89,0.15); border-radius: 14px; padding: 1.2rem 1.5rem; text-align: center; transition: all 0.3s ease; cursor: default; }
+.admin-stat-card:hover { background: rgba(255,255,255,0.95); transform: translateY(-4px); box-shadow: 0 6px 20px rgba(132,152,89,0.15); }
+.admin-stat-number { display: block; font-family: 'DM Sans', sans-serif; font-size: 1.8rem; font-weight: 400; color: #5a6e3a; }
+.admin-stat-label { font-family: 'Raleway', sans-serif; font-size: 0.6rem; font-weight: 600; color: #849859; text-transform: uppercase; letter-spacing: 0.04em; }
+.admin-users { padding: 0 1.5rem 100px; }
+.admin-users h3 { font-family: 'Raleway', sans-serif; font-size: 1rem; font-weight: 700; color: #5a6e3a; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.8rem; }
+.admin-user-card { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.7); border: 1px solid rgba(132,152,89,0.1); border-radius: 8px; margin-bottom: 0.3rem; }
+.admin-user-card span { font-family: 'Raleway', sans-serif; font-size: 0.8rem; color: #5a6e3a; }
+.admin-user-card button { padding: 0.3rem 0.8rem; background: #b5341e; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-family: 'Raleway', sans-serif; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.admin-user-card button:hover { background: #8b1a0e; }
+#modal-confirm-delete-user .modal-content { opacity: 0; transform: translateY(20px) scale(0.95); animation: modalIn 0.3s ease forwards; border-radius: 16px; }
+
 /*поздравление*/
 .congrats-modal { max-width: 420px !important; text-align: center; padding: 2rem !important; }
 #modal-congrats .modal-content { animation: modalIn 0.4s ease forwards; border-radius: 16px; }
