@@ -33,4 +33,9 @@ const AdminModule = {
       ).join('');
     }
   },
+
+  deleteUser(userId) {
+    this.pendingDeleteId = userId;
+    document.getElementById('modal-confirm-delete-user').classList.add('active');
+  },
 };
