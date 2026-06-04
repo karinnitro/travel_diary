@@ -72,6 +72,8 @@ def update_trip(trip_id):
     trip.photos = data.get('photos', trip.photos)
     trip.is_planned  = data.get('is_planned',  trip.is_planned)
     trip.place = data.get('place', trip.place)
+    trip.group_id = data.get('group_id', trip.group_id)
+    trip.group_name = data.get('group_name', trip.group_name)
 
     db.session.commit()
     return jsonify({'ok': True, 'trip': trip.to_dict()})

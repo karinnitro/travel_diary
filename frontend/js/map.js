@@ -54,12 +54,45 @@ const MapModule = {
       //при выборе результата то открываем окно добавления
       searchControl.events.add('resultselect', (e) => {
         const index = e.get('index');
-        searchControl.getResult(index).then((result) => {
+        searchControl.getResult(index).then(async (result) => {
           const coords = result.geometry.getCoordinates();
-          this.showAddDialog(coords);
+          const name = result.properties.get('name', '');
+          const description = result.properties.get('description', '');
+          
+          const parts = description ? description.split(', ') : [];
+          let country = parts.length > 0 ? parts[parts.length - 1] : '';
+          let city = name || (parts.length > 0 ? parts[0] : '');
+          
+          // если страна не определилась или это регион
+          if (!country || country.includes('область') || country.includes('край') || country.includes('республика')) {
+            country = '';
+          }
+          
+          // если страна не определилась — геокодируем
+          if (!country) {
+            try {
+              const geoResult = await fetch(
+                `https://geocode-maps.yandex.ru/1.x/?apikey=${MapModule.API_KEY}&format=json&geocode=${coords[0]},${coords[1]}&sco=latlong`
+              );
+              const geoData = await geoResult.json();
+              const geoObject = geoData.response.GeoObjectCollection.featureMember[0]?.GeoObject;
+              if (geoObject) {
+                const address = geoObject.metaDataProperty.GeocoderMetaData.Address;
+                country = address.Components.find(c => c.kind === 'country')?.name || '';
+                city = address.Components.find(c => c.kind === 'locality')?.name || city;
+              }
+            } catch(e) {}
+          }
+          
+          document.getElementById('marker-place').value = '';
+          document.getElementById('marker-city').value = city;
+          document.getElementById('marker-country').value = country;
+          document.querySelector('input[name="marker-type"][value="red"]').checked = true;
+          
+          this.currentCoords = coords;
+          document.getElementById('modal-marker').classList.add('active');
         });
       });
-
       //загружаю сохраненные маркеры с сервера
       this.loadMarkers();
 
@@ -87,8 +120,7 @@ const MapModule = {
     document.getElementById('marker-place').value = '';
     document.querySelector('input[name="marker-type"][value="red"]').checked = true;
     document.getElementById('modal-marker').classList.add('active');
-
-    // автоопределение адреса через геокодер Яндекс
+    
     try {
       const geoResult = await fetch(
         `https://geocode-maps.yandex.ru/1.x/?apikey=${this.API_KEY}&format=json&geocode=${coords[0]},${coords[1]}&sco=latlong`
@@ -97,16 +129,40 @@ const MapModule = {
       const geoObject = geoData.response.GeoObjectCollection.featureMember[0]?.GeoObject;
       if (geoObject) {
         const address = geoObject.metaDataProperty.GeocoderMetaData.Address;
-        const country = address.Components.find(c => c.kind === 'country')?.name || '';
-        const city = address.Components.find(c => c.kind === 'locality')?.name || '';
-        const place = geoObject.name || '';
+        let country = address.Components.find(c => c.kind === 'country')?.name || '';
+        // если страна не нашлась — проверяем, может это "Россия" в province
+        if (!country) {
+          const province = address.Components.find(c => c.kind === 'province')?.name || '';
+          if (province === 'Россия' || province.includes('Россия')) {
+            country = 'Россия';
+          }
+        }
+        let city = address.Components.find(c => c.kind === 'locality')?.name || '';
+        // если city — это регион/область/край — очищаем
+        if (city && (city.includes('округ') || city.includes('область') || city.includes('край') || city.includes('республика'))) {
+          city = '';
+        }
+        const place = geoObject.name;
+        
         document.getElementById('marker-country').value = country;
-        document.getElementById('marker-city').value = city;
-        if (place !== city) {
-          document.getElementById('marker-place').value = place;
+        
+        if (city) {
+          document.getElementById('marker-city').value = city;
+          // если есть город И место отличается от города — заполняем место
+            if (place && place !== city && 
+              !place.includes('округ') && 
+              !place.includes('район') && 
+              !place.includes('область') &&
+              !place.includes('край') &&
+              !place.includes('республика')) {
+            document.getElementById('marker-place').value = place;
+          }
+        } else {
+          // города нет — место = place
+          document.getElementById('marker-city').value = place || '';
         }
       }
-    } catch (e) { }
+    } catch(e) {}
   },
 
   //закрытие окна маркера

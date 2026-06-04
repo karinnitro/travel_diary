@@ -298,6 +298,8 @@ body {
 #modal-confirm-friend .modal-content { opacity: 0; transform: translateY(20px) scale(0.95); animation: modalIn 0.3s ease forwards; border-radius: 16px; }
 #modal-info .modal-content { opacity: 0; transform: translateY(20px) scale(0.95); animation: modalIn 0.3s ease forwards; border-radius: 16px; }
 #modal-confirm-delete-photo .modal-content { opacity: 0; transform: translateY(20px) scale(0.95); animation: modalIn 0.3s ease forwards; border-radius: 16px; }
+#view-content .trip-card { transition: none !important; transform: none !important; }
+#view-content .trip-card:hover { transform: none !important; box-shadow: none !important; border-color: var(--border) !important; cursor: pointer; }
 
 /*детали поездки*/
 .trip-detail-modal { max-width: 750px !important; max-height: 92vh !important; height: auto !important; min-height: 300px; padding: 2.5rem !important; position: relative; overflow-y: auto; background: #fff !important; }
@@ -320,6 +322,18 @@ body {
 .btn-small { padding: 0.35rem 0.8rem; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--surface); font-size: 0.8rem; cursor: pointer; font-family: 'DM Sans', sans-serif; }
 .btn-small.danger { color: var(--accent); border-color: var(--accent-light); }
 .btn-small.danger:hover { background: var(--accent-light); }
+#btn-add-to-group { background: #849859; color: #fff; border: none; font-family: 'Raleway', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.7rem; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; margin-right: auto; }
+#btn-add-to-group:hover { background: #6b7d45; }
+#btn-merge-trip { background: #a3b87a; color: #fff; border: none; font-family: 'Raleway', sans-serif; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.7rem; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; }
+#btn-merge-trip:hover { background: #8fa86a; }
+#btn-delete-group { background: #b5341e; color: #fff; border: none; font-family: 'Raleway', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.7rem; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; }
+#btn-delete-group:hover { background: #8b1a0e; }
+#btn-rename-group { background: #849859; color: #fff; border: none; font-family: 'Raleway', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.7rem; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; }
+#btn-rename-group:hover { background: #6b7d45; }
+#modal-rename-group .modal-content { opacity: 0; transform: translateY(20px) scale(0.95); animation: modalIn 0.3s ease forwards; border-radius: 16px; }
+#rename-group-input { font-family: 'Raleway', sans-serif; font-size: 0.9rem; }  
+#modal-confirm-delete-group .modal-content { opacity: 0; transform: translateY(20px) scale(0.95); animation: modalIn 0.3s ease forwards; border-radius: 16px; }
+#modal-confirm-remove-from-group .modal-content { opacity: 0; transform: translateY(20px) scale(0.95); animation: modalIn 0.3s ease forwards; border-radius: 16px; }
 
 /*фото в деталях*/
 .trip-photos-section { margin-top: 0.5rem; }
