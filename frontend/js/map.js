@@ -27,7 +27,7 @@ const MapModule = {
     ymaps.ready(() => {
       // создание карты
       this.map = new ymaps.Map('map-container', {
-        center: [55.76, 37.64],   
+        center: [55.76, 37.64],
         zoom: 4,
         controls: ['zoomControl']
       });
@@ -46,7 +46,7 @@ const MapModule = {
       const searchControl = new ymaps.control.SearchControl({
         options: {
           provider: 'yandex#search',
-          noPlacemark: true        
+          noPlacemark: true
         }
       });
       this.map.controls.add(searchControl);
@@ -80,12 +80,33 @@ const MapModule = {
   },
 
   //показ окна добавления маркера
-  showAddDialog(coords) {
+  async showAddDialog(coords) {
     this.currentCoords = coords;
     document.getElementById('marker-country').value = '';
     document.getElementById('marker-city').value = '';
+    document.getElementById('marker-place').value = '';
     document.querySelector('input[name="marker-type"][value="red"]').checked = true;
     document.getElementById('modal-marker').classList.add('active');
+
+    // автоопределение адреса через геокодер Яндекс
+    try {
+      const geoResult = await fetch(
+        `https://geocode-maps.yandex.ru/1.x/?apikey=${this.API_KEY}&format=json&geocode=${coords[0]},${coords[1]}&sco=latlong`
+      );
+      const geoData = await geoResult.json();
+      const geoObject = geoData.response.GeoObjectCollection.featureMember[0]?.GeoObject;
+      if (geoObject) {
+        const address = geoObject.metaDataProperty.GeocoderMetaData.Address;
+        const country = address.Components.find(c => c.kind === 'country')?.name || '';
+        const city = address.Components.find(c => c.kind === 'locality')?.name || '';
+        const place = geoObject.name || '';
+        document.getElementById('marker-country').value = country;
+        document.getElementById('marker-city').value = city;
+        if (place !== city) {
+          document.getElementById('marker-place').value = place;
+        }
+      }
+    } catch (e) { }
   },
 
   //закрытие окна маркера
@@ -97,17 +118,21 @@ const MapModule = {
   //сохранение маркера
   async saveMarker() {
     const country = document.getElementById('marker-country').value.trim();
-    const city    = document.getElementById('marker-city').value.trim();
-    const color   = document.querySelector('input[name="marker-type"]:checked').value;
+    const city = document.getElementById('marker-city').value.trim();
+    const place = document.getElementById('marker-place').value.trim();
+    const color = document.querySelector('input[name="marker-type"]:checked').value;
 
-    if (!country && !city) {
-      alert('Введите хотя бы страну или город');
+    if (!country && !city && !place) {
+      alert('Введите хотя бы страну, город или место');
       return;
     }
+    const finalCity = city || place;
+    const title = place || city || country;
 
     const tripResult = await Storage.addTrip({
       country: country,
       city: city,
+      place: place,
       year: new Date().getFullYear(),
       date: '',
       impressions: '',
@@ -135,7 +160,7 @@ const MapModule = {
           this.currentCoords[0],
           this.currentCoords[1],
           color,
-          city || country,
+          title,
           country
         );
       }
@@ -197,8 +222,8 @@ const MapModule = {
     const id = this.markerToDelete;
     if (id) {
       await Storage.deleteMarker(id);
-      this.loadMarkers();                
-      this.map.balloon.close();          
+      this.loadMarkers();
+      this.map.balloon.close();
     }
     this.closeConfirmModal();
   },
