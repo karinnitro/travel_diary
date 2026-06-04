@@ -7,7 +7,7 @@ const TripsModule = {
   //инициализация
   init() {
     //кнопки
-    document.getElementById('btn-add-trip').addEventListener('click', () => this.openAddModal());
+    //document.getElementById('btn-add-trip').addEventListener('click', () => this.openAddModal());
     document.getElementById('btn-cancel-trip').addEventListener('click', () => this.closeModal());
     document.getElementById('btn-close-view').addEventListener('click', () => this.closeViewModal());
     document.getElementById('form-trip').addEventListener('submit', e => { e.preventDefault(); this.saveTrip(); });
@@ -145,10 +145,12 @@ const TripsModule = {
   createTripCard(trip) {
     const div = document.createElement('div');
     div.className = 'trip-card' + (trip.is_planned ? ' planned' : '');
+    const title = trip.city || trip.place;
+    const subtitle = trip.city ? (trip.place || trip.country) : trip.country;
     div.innerHTML = `
       <div class="trip-card-left">
-        <h4>${trip.city}, ${trip.country}</h4>
-        <span>${trip.year} г.</span>
+        <h4>${title}</h4>
+        <span>${subtitle} · ${trip.year} г.</span>
       </div>
     `;
     div.addEventListener('click', () => this.viewTrip(trip));
@@ -189,9 +191,11 @@ const TripsModule = {
     }
 
     //содержимое
+    const title = trip.city || trip.place;
+    const subtitle = trip.city ? (trip.place ? trip.place + ', ' : '') + trip.country : trip.country;
     document.getElementById('view-content').innerHTML = `
-      <h2 class="trip-detail-city">${trip.city}</h2>
-      <p class="trip-detail-country">${trip.country}</p>
+      <h2 class="trip-detail-city">${title}</h2>
+      <p class="trip-detail-country">${subtitle}</p>
       <div class="trip-detail-info">
         <span>${trip.date || trip.year}</span>
         <span class="trip-detail-rating">${this.renderStars(trip.rating)}</span>
@@ -230,7 +234,7 @@ const TripsModule = {
               options: { provider: 'yandex#search', noPlacemark: false }
             });
             MapModule.map.controls.add(searchControl);
-            searchControl.search(trip.country + ' ' + trip.city);
+            searchControl.search(trip.country + ' ' + (trip.city || trip.place));
           }
         }
       }, 500);
@@ -321,6 +325,7 @@ const TripsModule = {
     document.getElementById('trip-impressions').value = trip.impressions || '';
     document.getElementById('trip-planned').checked = trip.is_planned || false;
     document.getElementById('modal-trip').classList.add('active');
+    document.getElementById('trip-place').value = trip.place || '';
 
     //звезды
     const currentRating = parseInt(trip.rating) || 0;
@@ -364,6 +369,7 @@ const TripsModule = {
     const tripData = {
       country:     document.getElementById('trip-country').value.trim(),
       city:        document.getElementById('trip-city').value.trim(),
+      place:       document.getElementById('trip-place')?.value?.trim() || '',
       year:        dateValue ? parseInt(dateValue.split('-')[0]) : new Date().getFullYear(),
       date:        dateValue,
       impressions: document.getElementById('trip-impressions').value.trim(),
@@ -410,8 +416,9 @@ const TripsModule = {
   //отправка данных на сервер и обновление маркеров и списка
   async doSaveTrip(id, tripData) {
     const photosArray = tripData.photos_json ? JSON.parse(tripData.photos_json) : [];
+    let photoKey = 'td_trip_photos_' + (id || Date.now());
+    
     if (photosArray.length > 0 || id) {
-      const photoKey = 'td_trip_photos_' + (id || Date.now());
       if (id) {
         localStorage.setItem('td_trip_photos_' + id, JSON.stringify(photosArray));
         tripData.photo_key = 'td_trip_photos_' + id;
@@ -421,7 +428,6 @@ const TripsModule = {
       }
       tripData.photo = JSON.stringify(photosArray);
     }
-    console.log('Сохранено в localStorage:', JSON.parse(localStorage.getItem('td_trip_photos_' + id)).length, 'фото');
 
     let result;
     if (id) {
@@ -429,10 +435,8 @@ const TripsModule = {
     } else {
       result = await Storage.addTrip(tripData);
     }
-    // ... дальше без изменений
 
     if (result.ok) {
-      //обновление цвета маркера при редактировании
       if (id && result.trip) {
         const markers = await Storage.getMarkers();
         const marker = markers.find(m => m.trip_id === parseInt(id));
@@ -447,44 +451,46 @@ const TripsModule = {
         }
       }
 
-      //создание маркера для новой поездки
       if (!id && result.trip) {
         const trip = result.trip;
         try {
-          const geoResult = await fetch(
-            `https://geocode-maps.yandex.ru/1.x/?apikey=${MapModule.API_KEY}&format=json&geocode=${encodeURIComponent(trip.country + ' ' + trip.city)}`
-          );
-          const geoData = await geoResult.json();
-          const pos = geoData.response.GeoObjectCollection.featureMember[0]?.GeoObject?.Point?.pos;
-          if (pos) {
-            const [lon, lat] = pos.split(' ').map(Number);
-            const markerResult = await Storage.addMarker({
-              latitude: lat, longitude: lon,
-              country: trip.country, city: trip.city,
-              color: trip.is_planned ? 'blue' : 'red',
-              trip_id: trip.id
-            });
-            if (markerResult.ok && MapModule.map) {
-              MapModule.addMarkerToMap(markerResult.marker.id, lat, lon,
-                trip.is_planned ? 'blue' : 'red', trip.city, trip.country);
+            // формируем адрес для поиска
+            const query = trip.place 
+              ? trip.place + ', ' + trip.city + ', ' + trip.country
+              : trip.city + ', ' + trip.country;
+            
+            // используем поиск через API Яндекс.Карт
+            const searchResult = await fetch(
+              `https://search-maps.yandex.ru/v1/?text=${encodeURIComponent(query)}&type=geo&lang=ru_RU&apikey=${MapModule.API_KEY}`
+            );
+            const searchData = await searchResult.json();
+            
+            if (searchData.features && searchData.features.length > 0) {
+              const [lon, lat] = searchData.features[0].geometry.coordinates;
+              const markerResult = await Storage.addMarker({
+                latitude: lat, longitude: lon,
+                country: trip.country, 
+                city: trip.city || trip.place,
+                color: trip.is_planned ? 'blue' : 'red',
+                trip_id: trip.id
+              });
+              if (markerResult.ok && MapModule.map) {
+                const markerTitle = trip.place || trip.city || trip.country;
+                MapModule.addMarkerToMap(markerResult.marker.id, lat, lon,
+                  trip.is_planned ? 'blue' : 'red', markerTitle, trip.country);
+              }
             }
-          }
-        } catch(e) {}
+        } catch(e) {
+          console.log('Ошибка геокодирования:', e);
+        }
       }
-
-      this.closeModal();
-
-      //обновляю список и карту
       this.loadTrips();
       if (MapModule.map) MapModule.loadMarkers();
 
-      // показываю результат
       if (id && result.trip) {
         this.viewTrip(result.trip);
       } else if (result.trip) {
         this.viewTrip(result.trip);
-      } else {
-        this.loadTrips();
       }
     } else {
       alert('Ошибка сохранения: ' + (result.error || 'неизвестная ошибка'));

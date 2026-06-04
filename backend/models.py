@@ -87,6 +87,7 @@ class Trip(db.Model):
     photo_key = db.Column(db.String(100), nullable=True)  # ключ в localStorage     
     is_planned  = db.Column(db.Boolean, default=False)         
     created_at  = db.Column(db.DateTime, default=datetime.utcnow)
+    place = db.Column(db.String(200), nullable=True)
 
     user_id     = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
@@ -104,6 +105,7 @@ class Trip(db.Model):
             'photo_key':   self.photo_key,
             'is_planned':  self.is_planned,
             'created_at':  self.created_at.isoformat() if self.created_at else None,
+            'place':       self.place,
         }
 
 

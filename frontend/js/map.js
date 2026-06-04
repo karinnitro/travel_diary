@@ -127,7 +127,8 @@ const MapModule = {
       return;
     }
     const finalCity = city || place;
-    const title = place || city || country;
+    const title = city || place;
+    const subtitle = city ? (place || '') : '';
 
     const tripResult = await Storage.addTrip({
       country: country,

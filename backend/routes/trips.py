@@ -40,7 +40,8 @@ def add_trip():
         photo_key=data.get('photo_key'),
         photos=data.get('photos_json'),
         is_planned  = data.get('is_planned', False),
-        user_id     = session['user_id']
+        user_id     = session['user_id'],
+        place=data.get('place', ''),
     )
     db.session.add(trip)
     db.session.commit()
@@ -70,6 +71,7 @@ def update_trip(trip_id):
     trip.photo_key = data.get('photo_key', trip.photo_key)
     trip.photos = data.get('photos', trip.photos)
     trip.is_planned  = data.get('is_planned',  trip.is_planned)
+    trip.place = data.get('place', trip.place)
 
     db.session.commit()
     return jsonify({'ok': True, 'trip': trip.to_dict()})
