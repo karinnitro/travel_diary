@@ -360,7 +360,7 @@ const TripsModule = {
       <div class="trip-detail-info">
         <span>${trip.date || trip.year}</span>
         <span class="trip-detail-rating">${this.renderStars(trip.rating)}</span>
-        <span>${trip.is_planned ? '🔵 План' : '🔴 Было'}</span>
+        <span>${trip.is_planned ? '🔵 Запланировано' : '🔴 Посещено'}</span>
       </div>
       <div class="trip-detail-impressions"><div class="impressions-box">${trip.impressions || 'Нет описания'}</div></div>
       ${photosHTML}
@@ -735,7 +735,7 @@ const TripsModule = {
     Object.values(groups).forEach(group => {
       const groupName = group[0].group_name || group[0].place || group[0].city;
       const isCurrentGroup = group[0].group_id === trip.group_id;
-      list += '<div class="friend-item"><label><input type="checkbox" value="group_' + group[0].group_id + '" ' + (isCurrentGroup ? 'checked' : '') + '> 📁 ' + groupName + ' (' + group.length + ' поездок)</label></div>';
+      list += '<div class="friend-item"><label><input type="checkbox" value="group_' + group[0].group_id + '" ' + (isCurrentGroup ? 'checked' : '') + '>  ' + groupName + ' (' + group.length + ' поездок)</label></div>';
     });
     
     // одиночные
