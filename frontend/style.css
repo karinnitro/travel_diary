@@ -195,7 +195,7 @@ body {
 .profile-left { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; flex-shrink: 0; padding-left: 4rem; }
 .profile-right { display: flex; flex-direction: column; justify-content: space-between; flex: 1; padding-left: 1rem; margin-top: -60px; height: 100%; }
 .profile-right-top { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
-.profile-right-bottom { display: flex; flex-direction: column; align-items: flex-end; text-align: right; margin-top: auto; margin-right: 2rem; }
+.profile-right-bottom { display: flex; flex-direction: column; align-items: center; text-align: center; margin-top: auto; margin-right: 0; }
 .profile-name { font-family: 'Raleway', sans-serif; font-size: 2rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #5a6e3a; margin-bottom: 0.1rem; }
 .profile-right .profile-name { margin-top: 4rem; margin-bottom: 0.1rem; }
 .profile-login { font-family: 'Raleway', sans-serif; font-size: 0.9rem; font-weight: 700; color: #849859; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0; }
@@ -214,18 +214,18 @@ body {
 .stat-divider { width: 1px; height: 30px; background: rgba(132,152,89,0.2); }
 
 /*статус*/
-.profile-status-wrapper { display: flex; align-items: center; justify-content: center; padding-left: 17rem; gap: 0.6rem; margin-top: 0.5rem; margin-bottom: 0.3rem; width: 100%; padding-right: 0; }
+.profile-status-wrapper { display: flex; align-items: center; justify-content: center; padding-left: 0rem; gap: 0.6rem; margin-top: 0.5rem; margin-bottom: 0.3rem; width: 100%; padding-right: 0; }
 .profile-status-label { font-family: 'Raleway', sans-serif; font-size: 1.5rem; font-weight: 600; color: #849859; }
 .profile-status { background: rgba(132,152,89,0.1); border: 1px solid rgba(132,152,89,0.2); border-radius: 20px; padding: 0.4rem 1.2rem; font-family: 'Raleway', sans-serif; font-size: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #5a6e3a; margin: 0; }
 
 /*уровни статусов*/
-.status-levels { display: flex; gap: 0.8rem; margin-top: 0.8rem; justify-content: flex-end; width: 100%; }
+.status-levels { display: flex; gap: 0.8rem; margin-top: 0.8rem; justify-content: flex-end; width: 100%; padding-right: 22rem; }
 .status-level-card { flex: 1; max-width: 280px; background: rgba(255,255,255,0.7); border: 1px solid rgba(132,152,89,0.15); border-radius: 14px; padding: 1.5rem 1.2rem; text-align: center; transition: all 0.3s ease; }
 .status-level-card:hover { background: rgba(255,255,255,0.95); transform: translateY(-6px) scale(1.05); box-shadow: 0 10px 28px rgba(132,152,89,0.2); border-color: rgba(132,152,89,0.3); }
 .status-level-img { width: 48px; height: 48px; object-fit: contain; margin-bottom: 0.5rem; }
 .status-level-title { font-family: 'Raleway', sans-serif; font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em; color: #5a6e3a; margin-bottom: 0.3rem; }
 .status-level-desc { font-family: 'Raleway', sans-serif; font-size: 0.8rem; font-weight: 800; color: #849859; line-height: 1.3; }
-.status-levels-text { font-family: 'Raleway', sans-serif; font-size: 1rem; font-weight: 600; color: #849859; text-align: center; margin-top: 0.8rem; line-height: 1.5; width: 85%; align-self: flex-end; }
+.status-levels-text { font-family: 'Raleway', sans-serif; font-size: 1rem; font-weight: 600; color: #849859; text-align: center; margin-top: 0.8rem; line-height: 1.5; width: 100%; }
 
 /*дата и выход из системы*/
 .profile-date { font-family: 'Raleway', sans-serif; font-size: 0.75rem; color: #849859; margin-bottom: 2rem; }
@@ -238,7 +238,7 @@ body {
 .btn-edit-profile:hover { background: rgba(132,152,89,0.1); }
 
 /*мои путешествия*/
-#panel-trips { background: linear-gradient(rgba(60,80,40,0.3), rgba(60,80,40,0.3)), url('img/travel.jpg') right center/auto 120% no-repeat !important; background-color: #c8d5a8; display: flex; flex-direction: column; height: calc(100vh - 64px); overflow: hidden; }
+#panel-trips { background: linear-gradient(rgba(60,80,40,0.3), rgba(60,80,40,0.3)), url('img/travel.jpg') right center/cover no-repeat !important; background-color: #c8d5a8; display: flex; flex-direction: column; height: calc(100vh - 64px); overflow: hidden; }
 .trips-header { background: #ffffff; padding: 1rem 1.5rem; border-bottom: 1px solid rgba(132,152,89,0.1); display: flex; align-items: center; flex-shrink: 0; }
 .trips-header h2 { font-family: 'Raleway', sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #4b5b31; margin: 0; text-align: left; }
 
@@ -286,7 +286,7 @@ body {
 .friend-item button:hover { background: #6b7d45; }
 .friend-item .btn-remove-friend { background: #b5341e; margin-left: 4px; }
 .friend-item .btn-remove-friend:hover { background: #8b1a0e; }
-#btn-open-friends { width: auto !important; flex: none !important; display: inline-block !important; align-self: flex-start !important; }
+#btn-open-friends { width: auto !important; flex: none !important; display: inline-block !important; align-self: flex-start !important; margin-right: 0rem; }
 
 /*модальные окна (общие)*/
 .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26,22,18,0.6); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
