@@ -1,5 +1,5 @@
 //профиль, аватар, статистика, статусы, возраст
- 
+
 const ProfileModule = {
   sentRequestIds: [],
   //инициализация
@@ -45,12 +45,12 @@ const ProfileModule = {
     document.querySelectorAll('.status-level-card').forEach(card => {
       card.classList.remove('active-level');
       const level = card.dataset.level;
-      if ((level === 'novice'   && user.status.includes('Новичок')) ||
-          (level === 'amateur'  && user.status.includes('Любитель')) ||
-          (level === 'expert'   && user.status.includes('Эксперт'))) {
+      if ((level === 'novice' && user.status.includes('Новичок')) ||
+        (level === 'amateur' && user.status.includes('Любитель')) ||
+        (level === 'expert' && user.status.includes('Эксперт'))) {
         card.classList.add('active-level');
       }
-   });
+    });
 
     //дата регистрации
     document.getElementById('profile-date').textContent =
@@ -64,11 +64,11 @@ const ProfileModule = {
   //аватар
   //загрузка сохраненного аватара
   loadSavedAvatar(userId) {
-    const saved      = localStorage.getItem('td_avatar_' + userId);
-    const img        = document.getElementById('profile-avatar-img');
+    const saved = localStorage.getItem('td_avatar_' + userId);
+    const img = document.getElementById('profile-avatar-img');
     const placeholder = document.getElementById('profile-avatar-placeholder');
-    const changeBtn  = document.getElementById('btn-avatar-change');
-    const deleteBtn  = document.getElementById('btn-avatar-delete');
+    const changeBtn = document.getElementById('btn-avatar-change');
+    const deleteBtn = document.getElementById('btn-avatar-delete');
 
     if (saved) {
       img.src = saved;
@@ -107,9 +107,9 @@ const ProfileModule = {
   },
   //сохранение изменений
   async saveProfile() {
-    const name   = document.getElementById('edit-name').value.trim();
+    const name = document.getElementById('edit-name').value.trim();
     const gender = document.getElementById('edit-gender').value;
-    const birth  = document.getElementById('edit-birth').value;
+    const birth = document.getElementById('edit-birth').value;
 
     if (!name) {
       alert('Введите имя');
@@ -146,10 +146,10 @@ const ProfileModule = {
 
   //склонение слова год
   getAgeWord(age) {
-    const last    = age % 10;
+    const last = age % 10;
     const lastTwo = age % 100;
     if (lastTwo >= 11 && lastTwo <= 14) return 'лет';
-    if (last === 1)  return 'год';
+    if (last === 1) return 'год';
     if (last >= 2 && last <= 4) return 'года';
     return 'лет';
   },
@@ -170,7 +170,7 @@ const ProfileModule = {
     }
     const friendsResult = await Storage.getFriends();
     const friendIds = friendsResult.ok ? friendsResult.friends.map(f => f.id) : [];
-    
+
     container.innerHTML = result.users.map(u => {
       const avatar = localStorage.getItem('td_avatar_' + u.id);
       const avatarHTML = avatar ? '<div class="friend-avatar" style="background-image:url(\'' + avatar + '\')"></div>' : '<div class="friend-avatar"></div>';
@@ -189,7 +189,7 @@ const ProfileModule = {
     document.getElementById('modal-friend-title').textContent = 'Добавить в друзья?';
     document.getElementById('modal-friend-message').textContent = 'Пользователь получит заявку.';
     document.getElementById('modal-confirm-friend').classList.add('active');
-    
+
     const confirmBtn = document.getElementById('btn-confirm-friend');
     const newBtn = confirmBtn.cloneNode(true);
     confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
@@ -236,7 +236,7 @@ const ProfileModule = {
     document.getElementById('modal-friend-title').textContent = action === 'accept' ? 'Принять заявку?' : 'Отклонить заявку?';
     document.getElementById('modal-friend-message').textContent = 'Вы уверены?';
     document.getElementById('modal-confirm-friend').classList.add('active');
-    
+
     const confirmBtn = document.getElementById('btn-confirm-friend');
     const newBtn = confirmBtn.cloneNode(true);
     confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
@@ -290,6 +290,27 @@ const ProfileModule = {
   },
 
   //привязка кнопок
+
+    handleAvatarFile(file) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxSize = 500;
+        let w = img.width, h = img.height;
+        if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+        else { w = Math.round(w * maxSize / h); h = maxSize; }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const compressed = canvas.toDataURL('image/jpeg', 0.85);
+        this.setAvatar(compressed);
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  },
+  
   //все обработчики событий
   bindEvents() {
     // аватар
@@ -302,28 +323,8 @@ const ProfileModule = {
 
     //сжатие и загрузка фото
     document.getElementById('profile-avatar-input').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas  = document.createElement('canvas');
-          const maxSize = 500;
-          let w = img.width;
-          let h = img.height;
-          if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
-          else       { w = Math.round(w * maxSize / h); h = maxSize; }
-          canvas.width  = w;
-          canvas.height = h;
-          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-          const compressed = canvas.toDataURL('image/jpeg', 0.85);
-          this.setAvatar(compressed);
-        };
-        img.src = event.target.result;
-      };
-      reader.readAsDataURL(file);
+      if (!e.target.files || !e.target.files[0]) return;
+      this.handleAvatarFile(e.target.files[0]);
     });
 
     //выход
@@ -358,7 +359,7 @@ const ProfileModule = {
       this.saveProfile();
     });
 
-       //друзья
+    //друзья
     document.getElementById('btn-open-friends').addEventListener('click', () => {
       document.getElementById('modal-friends').classList.add('active');
       this.loadFriendRequests();
@@ -371,7 +372,7 @@ const ProfileModule = {
     document.getElementById('btn-close-friends').addEventListener('click', () => {
       document.getElementById('modal-friends').classList.remove('active');
     });
-      document.getElementById('friend-search-input').addEventListener('input', () => this.searchFriends());
+    document.getElementById('friend-search-input').addEventListener('input', () => this.searchFriends());
 
     setTimeout(() => {
       const b = document.getElementById('btn-open-friends');
