@@ -376,7 +376,7 @@ const ProfileModule = {
     setTimeout(() => {
       const b = document.getElementById('btn-open-friends');
       if (b) {
-        b.setAttribute('style', 'padding: 0.7rem 2.5rem !important; font-size: 1rem !important; width: auto !important; flex: none !important; display: inline-block !important; background: #849859 !important; color: #fff !important; border: none !important; border-radius: 10px !important; margin-left: 39rem !important; transition: none !important;');
+        b.setAttribute('style', 'padding: 0.7rem 2.5rem !important; font-size: 1rem !important; width: auto !important; flex: none !important; display: inline-block !important; background: #849859 !important; color: #fff !important; border: none !important; border-radius: 10px !important; margin-left: 45rem !important; transition: none !important;');
       }
     }, 200);
 

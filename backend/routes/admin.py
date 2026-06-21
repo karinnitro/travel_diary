@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, session
-from models import db, User, Trip, Marker
+from models import db, User, Trip, Marker, FriendRequest
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -35,9 +35,16 @@ def delete_user(user_id):
         return jsonify({'ok': False, 'error': 'Нет доступа'}), 403
     if user_id == admin.id:
         return jsonify({'ok': False, 'error': 'Нельзя удалить себя'}), 400
+    
     user = db.session.get(User, user_id)
     if not user:
         return jsonify({'ok': False}), 404
+    
+    # удаляем связанные данные
+    Trip.query.filter_by(user_id=user_id).delete()
+    Marker.query.filter_by(user_id=user_id).delete()
+    FriendRequest.query.filter((FriendRequest.from_user_id == user_id) | (FriendRequest.to_user_id == user_id)).delete()
+    
     db.session.delete(user)
     db.session.commit()
     return jsonify({'ok': True})
