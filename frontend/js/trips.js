@@ -615,6 +615,7 @@ const TripsModule = {
     }
 
     if (result.ok) {
+      this.closeModal();
       if (id && result.trip) {
         const markers = await Storage.getMarkers();
         const marker = markers.find(m => m.trip_id === parseInt(id));
